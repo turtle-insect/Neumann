@@ -212,7 +212,7 @@ IScene* SaveEditorScene::Update(Input& input)
 void SaveEditorScene::Draw(FrameBuffer& frameBuffer)
 {
 	mTitleDecorate.Draw(frameBuffer, 0, 0);
-	mBackupList.Draw(frameBuffer, 10, mTitleDecorate.Height() + 20);
+	mBackupList.Draw(frameBuffer, 20, mTitleDecorate.Height() + 20);
 	mGuide.Draw(frameBuffer, frameBuffer.GetWidth() - mGuide.Width() - 10, frameBuffer.GetHeight() - mGuide.Height() - 10);
 }
 
