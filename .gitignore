@@ -20,6 +20,9 @@ build/
 *.dylib
 *.dll
 
+# Editor Backup files
+*.BAK
+
 # Fortran module files
 *.mod
 *.smod

@@ -18,6 +18,9 @@ void HorizontalSprites::Clear()
 		delete mSprites[i];
 	}
 	mSprites.clear();
+	mMargin.clear();
+	mWidth = 0;
+	mHeight = 0;
 }
 
 void HorizontalSprites::AppendSprite(Sprite* sprite, size_t margin)
