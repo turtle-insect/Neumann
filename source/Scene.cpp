@@ -32,9 +32,9 @@ void TitleScene::Entry()
 	mTitleList.Config(5, 2, 0);
 	Device& device = Device::Instance();
 	std::vector<Title*>& titles = device.GetTitles();
-	for (size_t cnt = 0; cnt < titles.size(); cnt++)
+	for (size_t i = 0; i < titles.size(); i++)
 	{
-		Sprite* sprite = titles[cnt]->GetImage();
+		Sprite* sprite = titles[i]->GetImage();
 		if (sprite == nullptr) continue;
 		mTitleList.AppendSprite(sprite);
 	}
@@ -95,18 +95,20 @@ void AccountScene::Entry()
 
 	Device& device = Device::Instance();
 	std::vector<Title*>& titles = device.GetTitles();
-	for (size_t cnt = 0; cnt < titles.size(); cnt++)
+	for (size_t i = 0; i < titles.size(); i++)
 	{
-		Sprite* sprite = titles[cnt]->GetImage();
+		Sprite* sprite = titles[i]->GetImage();
 		if (sprite == nullptr) continue;
 		mTitleList.AppendSprite(sprite);
-		if (mTitleID == titles[cnt]->GetID()) mTitleList.SetCursor(cnt);
+		if (mTitleID == titles[i]->GetID()) mTitleList.SetCursor(i);
 	}
 
 	std::vector<Account*>& accounts = device.GetAccounts(mTitleID);
-	for (size_t cnt = 0; cnt < accounts.size(); cnt++)
+	for (size_t i = 0; i < accounts.size(); i++)
 	{
-		mAccountList.AppendSprite(accounts[cnt]->GetImage());
+		Sprite* sprite = accounts[i]->GetImage();
+		if (sprite == nullptr) continue;
+		mAccountList.AppendSprite(sprite);
 	}
 
 	mTitleDecorate.SetColor(0xFF05BCFB);
@@ -272,6 +274,10 @@ IScene* DebugScene::Update(Input& input)
 {
 	mLogList.Update(input);
 	if (input.KeyDown(KEY_A))
+	{
+		// Any Debug Programming.
+	}
+	else if (input.KeyDown(KEY_B))
 	{
 		return new BootScene();
 	}
