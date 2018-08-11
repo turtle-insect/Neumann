@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "Device.hpp"
 #include "Input.hpp"
 #include "Image.hpp"
@@ -232,6 +233,7 @@ void ActionScene::CreateBackupList()
 	SaveData save(mTitleID, mUserID);
 	std::vector<std::string> paths;
 	save.GetBackupPaths(paths);
+	std::sort(paths.begin(), paths.end(), std::greater<std::string>());
 	for (size_t i = 0; i < paths.size(); i++)
 	{
 		Text* text = new Text(Font::eType24, paths[i], FONT_BLACK);
