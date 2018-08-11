@@ -6,15 +6,17 @@
 #include "FrameBuffer.hpp"
 #include "ItemList.hpp"
 
+const size_t CursorWeight = 3;
+
 ItemList::ItemList()
 	: mColumn(0)
 	, mRow(0)
 	, mMargin(0)
 	, mCursor(0)
+	, mCursorColor(0x8000FF00)
 {
 	mFrame.SetMode(Rectangle::eMode::eFrame);
-	mFrame.SetWeight(3);
-	mFrame.SetColor(0xFF00FF00);
+	mFrame.SetWeight(CursorWeight);
 }
 
 ItemList::~ItemList()
@@ -52,6 +54,9 @@ void ItemList::Update(Input& input)
 	if (index < 0) index = mSprites.size() - 1;
 	if (index >= (int)mSprites.size()) index = 0;
 	mCursor = index;
+	
+	mCursorColor += 0x02000000;
+	mFrame.SetColor(mCursorColor);
 }
 
 size_t ItemList::GetCursor()
@@ -102,7 +107,7 @@ void ItemList::Draw(FrameBuffer& frameBuffer, size_t left, size_t top)
 
 	x = left + (mCursor % mColumn) * (width + mMargin);
 	y = top + (mCursor / mColumn + offset) * (height + mMargin);
-	mFrame.SetWidth(width);
-	mFrame.SetHeight(height);
-	mFrame.Draw(frameBuffer, x, y);
+	mFrame.SetWidth(width + CursorWeight * 2);
+	mFrame.SetHeight(height + CursorWeight * 2);
+	mFrame.Draw(frameBuffer, x - CursorWeight, y - CursorWeight);
 }

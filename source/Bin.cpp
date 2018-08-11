@@ -57,13 +57,7 @@ void Bin::Draw(FrameBuffer& frameBuffer, size_t left, size_t top)
 			if (dx >= frameBuffer.GetWidth())break;
 
 			const u8* pixel = mBuffer + (y * mWidth + x) * 4;
-			if (*pixel == 0) continue;
-			u8* buffer = frameBuffer.GetPixel(dx, dy);
-
-			*buffer = blendColor(*buffer, pixel[3], *pixel); buffer++;
-			*buffer = blendColor(*buffer, pixel[2], *pixel); buffer++;
-			*buffer = blendColor(*buffer, pixel[1], *pixel); buffer++;
-			*buffer = 0xFF;
+			DrawPixel(frameBuffer, dx, dy, pixel[3] & pixel[2] << 8 & pixel[2] << 16, *pixel);
 		}
 	}
 }

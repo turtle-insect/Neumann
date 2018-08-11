@@ -28,6 +28,7 @@ private:
 	size_t mRow;
 	size_t mMargin;
 	size_t mCursor;
+	u32 mCursorColor;
 	std::vector<Sprite*> mSprites;
 	Rectangle mFrame;
 };

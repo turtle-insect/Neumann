@@ -88,11 +88,7 @@ void Text::Draw(FrameBuffer& frameBuffer, size_t left, size_t top)
 			if (dx < 0)continue;
 			if (dx >= frameBuffer.GetWidth())break;
 
-			u8* buffer = frameBuffer.GetPixel(dx, dy);
-			*buffer = blendColor(*buffer, mColor & 0xFF, alpha); buffer++;
-			*buffer = blendColor(*buffer, (mColor >> 8) & 0xFF, alpha); buffer++;
-			*buffer = blendColor(*buffer, (mColor >> 16) & 0xFF, alpha); buffer++;
-			*buffer = 0xFF;
+			DrawPixel(frameBuffer, dx, dy, mColor, alpha);
 		}
 	}
 }

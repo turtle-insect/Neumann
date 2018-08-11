@@ -74,14 +74,14 @@ void Rectangle::Fill(FrameBuffer& frameBuffer, size_t left, size_t top)
 			if (dx < 0)continue;
 			if (dx >= frameBuffer.GetWidth())break;
 
-			u32* pixel = (u32*)(frameBuffer.GetPixel(dx, dy));
-			*pixel = mColor;
+			DrawPixel(frameBuffer, dx, dy, mColor, (mColor >> 24) & 0xFF);
 		}
 	}
 }
 
 void Rectangle::Frame(FrameBuffer& frameBuffer, size_t left, size_t top)
 {
+	u8 alpha = (mColor >> 24) & 0xFF;
 	for (size_t y = 0; y < mHeight; y++)
 	{
 		size_t dy = top + y;
@@ -90,10 +90,8 @@ void Rectangle::Frame(FrameBuffer& frameBuffer, size_t left, size_t top)
 
 		for (size_t weight = 0; weight < mWeight; weight++)
 		{
-			u32* pixel = (u32*)(frameBuffer.GetPixel(left + weight, dy));
-			if(pixel) *pixel = mColor;
-			pixel = (u32*)(frameBuffer.GetPixel(left + mWidth - weight - 1, dy));
-			if (pixel) *pixel = mColor;
+			DrawPixel(frameBuffer, left + weight, dy, mColor, alpha);
+			DrawPixel(frameBuffer, left + mWidth - weight - 1, dy, mColor, alpha);
 		}
 	}
 	for (size_t x = 0; x < mWidth; x++)
@@ -104,10 +102,8 @@ void Rectangle::Frame(FrameBuffer& frameBuffer, size_t left, size_t top)
 
 		for (size_t weight = 0; weight < mWeight; weight++)
 		{
-			u32* pixel = (u32*)(frameBuffer.GetPixel(dx, top + weight));
-			if (pixel) *pixel = mColor;
-			pixel = (u32*)(frameBuffer.GetPixel(dx, top + mHeight + weight - 1));
-			if (pixel) *pixel = mColor;
+			DrawPixel(frameBuffer, dx, top + weight, mColor, alpha);
+			DrawPixel(frameBuffer, dx, top + mHeight + weight - 1, mColor, alpha);
 		}
 	}
 }

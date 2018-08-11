@@ -124,14 +124,14 @@ IScene* AccountScene::Update(Input& input)
 		mTitle.Clear();
 		Device& device = Device::Instance();
 		std::vector<Account*>& Accounts = device.GetAccounts(mTitleID);
-		mTitle.AppendSprite(new Text(Font::eType24, "Account : " + Accounts[mTitleList.GetCursor()]->GetName(), FONT_WHITE), 0);
+		mTitle.AppendSprite(new Text(Font::eType24, "Account : " + Accounts[mAccountList.GetCursor()]->GetName(), FONT_WHITE), 0);
 	}
 
 	if (input.KeyDown(KEY_A) && mAccountList.GetCount())
 	{
 		Device& device = Device::Instance();
 		std::vector<Account*>& accounts = device.GetAccounts(mTitleID);
-		return new SaveEditorScene(mTitleID, accounts[mAccountList.GetCursor()]->GetID());
+		return new ActionScene(mTitleID, accounts[mAccountList.GetCursor()]->GetID());
 	}
 	else if (input.KeyDown(KEY_B))
 	{
@@ -148,13 +148,13 @@ void AccountScene::Draw(FrameBuffer& frameBuffer)
 	mAccountList.Draw(frameBuffer, 30, 550);
 }
 
-SaveEditorScene::SaveEditorScene(u64 titleID, u128 userID)
+ActionScene::ActionScene(u64 titleID, u128 userID)
 	: mTitleID(titleID)
 	, mUserID(userID)
 {
 }
 
-SaveEditorScene::~SaveEditorScene()
+ActionScene::~ActionScene()
 {
 	for (size_t i = 0; i < mTextList.size(); i++)
 	{
@@ -162,7 +162,7 @@ SaveEditorScene::~SaveEditorScene()
 	}
 }
 
-void SaveEditorScene::Entry()
+void ActionScene::Entry()
 {
 	mBackupList.Config(1, 10, 5);
 	CreateBackupList();
@@ -170,6 +170,8 @@ void SaveEditorScene::Entry()
 	mTitleDecorate.SetColor(0xFFF48542);
 	mTitleDecorate.SetWidth(1280);
 	mTitleDecorate.SetHeight(64);
+
+	mTitle.AppendSprite(new Text(Font::eType24, "Action", FONT_WHITE), 0);
 
 	mGuide.AppendSprite(new Bin(Bin::eType::eX), 10);
 	mGuide.AppendSprite(new Text(Font::eType24, "Backup", FONT_BLACK), 20);
@@ -181,14 +183,13 @@ void SaveEditorScene::Entry()
 	mGuide.AppendSprite(new Text(Font::eType24, "Back", FONT_BLACK), 20);
 }
 
-IScene* SaveEditorScene::Update(Input& input)
+IScene* ActionScene::Update(Input& input)
 {
 	mBackupList.Update(input);
 	if (input.KeyDown(KEY_Y) && mBackupList.GetCount())
 	{
 		// Resotre
-		SaveData save(mTitleID, mUserID);
-		save.Restore(mTextList[mBackupList.GetCursor()]->GetText());
+		return new ConfirmScene(mTitleID, mUserID, mTextList[mBackupList.GetCursor()]->GetText());
 	}
 	else if (input.KeyDown(KEY_X))
 	{
@@ -211,14 +212,15 @@ IScene* SaveEditorScene::Update(Input& input)
 	return this;
 }
 
-void SaveEditorScene::Draw(FrameBuffer& frameBuffer)
+void ActionScene::Draw(FrameBuffer& frameBuffer)
 {
 	mTitleDecorate.Draw(frameBuffer, 0, 0);
+	mTitle.Draw(frameBuffer, (frameBuffer.GetWidth() - mTitle.Width()) / 2, (mTitleDecorate.Height() - mTitle.Height()) / 2);
 	mBackupList.Draw(frameBuffer, 20, mTitleDecorate.Height() + 20);
 	mGuide.Draw(frameBuffer, frameBuffer.GetWidth() - mGuide.Width() - 10, frameBuffer.GetHeight() - mGuide.Height() - 10);
 }
 
-void SaveEditorScene::CreateBackupList()
+void ActionScene::CreateBackupList()
 {
 	for (size_t i = 0; i < mTextList.size(); i++)
 	{
@@ -236,6 +238,54 @@ void SaveEditorScene::CreateBackupList()
 		mTextList.push_back(text);
 		mBackupList.AppendSprite(text);
 	}
+}
+
+ConfirmScene::ConfirmScene(u64 titleID, u128 userID, std::string filename)
+	: mTitleID(titleID)
+	, mUserID(userID)
+	, mFileName(filename)
+{
+
+}
+
+ConfirmScene::~ConfirmScene()
+{
+
+}
+
+void ConfirmScene::Entry()
+{
+	mTitleDecorate.SetColor(0xFF000000);
+	mTitleDecorate.SetWidth(1280);
+	mTitleDecorate.SetHeight(64);
+
+	mTitle.AppendSprite(new Text(Font::eType24, "Confirm", FONT_WHITE), 0);
+
+	mGuide.AppendSprite(new Text(Font::eType24, "If you Resotre pressing ", FONT_BLACK), 0);
+	mGuide.AppendSprite(new Bin(Bin::eType::eA), 0);
+}
+
+IScene* ConfirmScene::Update(Input& input)
+{
+	if (input.KeyDown(KEY_A))
+	{
+		// Resotre
+		SaveData save(mTitleID, mUserID);
+		save.Restore(mFileName);
+		return new ActionScene(mTitleID, mUserID);
+	}
+	else if (input.KeyDown(KEY_B))
+	{
+		return new ActionScene(mTitleID, mUserID);
+	}
+	return this;
+}
+
+void ConfirmScene::Draw(FrameBuffer& frameBuffer)
+{
+	mTitleDecorate.Draw(frameBuffer, 0, 0);
+	mTitle.Draw(frameBuffer, (frameBuffer.GetWidth() - mTitle.Width()) / 2, (mTitleDecorate.Height() - mTitle.Height()) / 2);
+	mGuide.Draw(frameBuffer, (frameBuffer.GetWidth() - mGuide.Width()) / 2, mTitleDecorate.Height() + (frameBuffer.GetHeight() - mGuide.Height() - mTitleDecorate.Height()) / 2);
 }
 
 DebugScene::DebugScene()

@@ -57,11 +57,11 @@ private:
 	HorizontalSprites mTitle;
 };
 
-class SaveEditorScene : public IScene
+class ActionScene : public IScene
 {
 public:
-	SaveEditorScene(u64 titleID, u128 userID);
-	~SaveEditorScene();
+	ActionScene(u64 titleID, u128 userID);
+	~ActionScene();
 
 	void Entry();
 	IScene* Update(Input& input);
@@ -74,8 +74,29 @@ private:
 	u128 mUserID;
 	ItemList mBackupList;
 	Rectangle mTitleDecorate;
+	HorizontalSprites mTitle;
 	HorizontalSprites mGuide;
 	std::vector<Text*> mTextList;
+};
+
+class ConfirmScene : public IScene
+{
+public:
+	ConfirmScene(u64 titleID, u128 userID, std::string filename);
+	~ConfirmScene();
+
+	void Entry();
+	IScene* Update(Input& input);
+	void Draw(FrameBuffer& frameBuffer);
+
+private:
+	u64 mTitleID;
+	u128 mUserID;
+	std::string mFileName;
+
+	Rectangle mTitleDecorate;
+	HorizontalSprites mTitle;
+	HorizontalSprites mGuide;
 };
 
 class DebugScene : public IScene
