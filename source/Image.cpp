@@ -91,19 +91,10 @@ void Image::Draw(FrameBuffer& frameBuffer, size_t left, size_t top)
 	for (size_t y = 0; y < mHeight; y++)
 	{
 		size_t dy = top + y;
-		if (dy >= frameBuffer.GetHeight()) return;
-		if (dy < 0)continue;
-
-		u8* buffer = frameBuffer.GetPixel(left, dy);
 		for (size_t x = 0; x < mWidth; x++)
 		{
 			size_t dx = left + x;
-			if (dx < 0)continue;
-			if (dx >= frameBuffer.GetWidth())break;
-
-			u8* source = mBuffer + (y * mWidth + x) * 3;
-			for (size_t i = 0; i < 3; i++)*buffer++ = *source++;
-			*buffer++ = 0xFF;
+			DrawPixel(frameBuffer, dx, dy, *(u32*)(mBuffer + (y * mWidth + x) * 3), 0xFF);
 		}
 	}
 }

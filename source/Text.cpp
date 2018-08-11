@@ -77,17 +77,12 @@ void Text::Draw(FrameBuffer& frameBuffer, size_t left, size_t top)
 	for (size_t y = 0; y < mHeight; y++)
 	{
 		size_t dy = top + y;
-		if (dy >= frameBuffer.GetHeight()) return;
-		if (dy < 0)continue;
 		for (size_t x = 0; x < mWidth; x++)
 		{
 			u8 alpha = mAlpha[y * mWidth + x];
 			if (!alpha) continue;
 
 			size_t dx = left + x;
-			if (dx < 0)continue;
-			if (dx >= frameBuffer.GetWidth())break;
-
 			DrawPixel(frameBuffer, dx, dy, mColor, alpha);
 		}
 	}

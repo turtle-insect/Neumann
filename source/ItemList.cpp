@@ -13,10 +13,11 @@ ItemList::ItemList()
 	, mRow(0)
 	, mMargin(0)
 	, mCursor(0)
-	, mCursorColor(0x8000FF00)
+	, mCursorColor(0xFF00FF00)
 {
 	mFrame.SetMode(Rectangle::eMode::eFrame);
 	mFrame.SetWeight(CursorWeight);
+	mFrame.SetColor(mCursorColor);
 }
 
 ItemList::~ItemList()

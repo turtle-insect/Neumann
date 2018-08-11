@@ -47,17 +47,12 @@ void Bin::Draw(FrameBuffer& frameBuffer, size_t left, size_t top)
 	for (size_t y = 0; y < mHeight; y++)
 	{
 		size_t dy = top + y;
-		if (dy >= frameBuffer.GetHeight()) return;
-		if (dy < 0)continue;
-
 		for (size_t x = 0; x < mWidth; x++)
 		{
 			size_t dx = left + x;
-			if (dx < 0)continue;
-			if (dx >= frameBuffer.GetWidth())break;
 
 			const u8* pixel = mBuffer + (y * mWidth + x) * 4;
-			DrawPixel(frameBuffer, dx, dy, pixel[3] & pixel[2] << 8 & pixel[2] << 16, *pixel);
+			DrawPixel(frameBuffer, dx, dy, pixel[3] & ((u32)pixel[2] << 8) & ((u32)pixel[2] << 16), *pixel);
 		}
 	}
 }
