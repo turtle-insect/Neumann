@@ -53,6 +53,7 @@ void Device::Initialize()
 		if (ite == accounts.end())
 		{
 			account = new Account(userID);
+			mAccounts.push_back(account);
 			accounts.insert(std::map<u128, Account*>::value_type(userID, account));
 		}
 		else
