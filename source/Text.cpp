@@ -2,26 +2,7 @@
 #include "FrameBuffer.hpp"
 #include "Text.hpp"
 
-inline u32 decodeUTF8(const char** ptr)
-{
-	u32 r, cnt, i;
-	char ch;
-
-	cnt = 1;
-	ch = **ptr;
-
-	if ((ch & 0xE0) == 0xE0) cnt = 3;
-	else if ((ch & 0xC0) == 0xC0) cnt = 2;
-
-	for (i = r = 0; i < cnt; i++) {
-		ch = **ptr;
-		(*ptr)++;
-		r = ch + (r << 8);
-	}
-	return r;
-}
-
-Text::Text(Font::eType type, std::string text, u32 color)
+Text::Text(std::string text, size_t size, u32 color)
 	: mColor(color)
 	, mAlpha(nullptr)
 {
@@ -30,40 +11,53 @@ Text::Text(Font::eType type, std::string text, u32 color)
 	Glyph glyph;
 
 	// Dimensions
-	mHeight = font.GetHeight(type);
-	const char* ch = text.c_str();
-	while (*ch)
+	const uint8_t* str = (const uint8_t*)text.c_str();
+	int upper = 0;
+	int lower = 0;
+	for(size_t i = 0; i < text.length();)
 	{
-		u32 code = decodeUTF8(&ch);
-		if (!font.GetGlyph(glyph, type, code))
-			if (!font.GetGlyph(glyph, type, '?'))
+		u32 code = 0;
+		ssize_t count = decode_utf8(&code, &str[i]);
+		if(count <= 0) break;
+		i += count;
+
+		if (!font.GetGlyph(glyph, size, code))
+			if (!font.GetGlyph(glyph, size, '?'))
 				continue;
 
-		mWidth += glyph.advance;
+		mWidth += glyph.advanceX;
+		if(upper < glyph.posY) upper = glyph.posY;
+		int tmp = (int)glyph.height - (int)glyph.posY;
+		if(lower < tmp) lower = tmp;
 	}
 
+	mHeight = upper + lower;
 	mAlpha = new u8[mWidth * mHeight];
 	memset(mAlpha, 0, mWidth * mHeight);
 	size_t width = 0;
-	size_t baseline = font.GetBaseLine(type);
-	ch = text.c_str();
-	while (*ch)
+	str = (const uint8_t*)text.c_str();
+	for(size_t i = 0; i < text.length();)
 	{
-		u32 code = decodeUTF8(&ch);
-		if (!font.GetGlyph(glyph, type, code))
-			if (!font.GetGlyph(glyph, type, '?'))
+		u32 code = 0;
+		ssize_t count = decode_utf8(&code, &str[i]);
+		if(count <= 0) break;
+		i += count;
+
+		if (!font.GetGlyph(glyph, size, code))
+			if (!font.GetGlyph(glyph, size, '?'))
 				continue;
-		
+
 		const u8* data = glyph.data;
 		for (size_t y = 0; y < glyph.height; y++)
 		{
 			for (size_t x = 0; x < glyph.width; x++)
 			{
-				mAlpha[(y + baseline + glyph.posY) * mWidth + x + glyph.posX + width] = *data;
-				data++;
+				int index = (y + upper - glyph.posY) * mWidth + x + width + glyph.posX;
+				if(index >= 0 && index < (int)(mWidth * mHeight)) mAlpha[index] = data[x];
 			}
+			data += glyph.pitch;
 		}
-		width += glyph.advance;
+		width += glyph.advanceX;
 	}
 }
 

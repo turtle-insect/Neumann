@@ -26,6 +26,7 @@ public:
 private:
 	size_t mColumn;
 	size_t mRow;
+	size_t mMaxHeight;
 	size_t mMargin;
 	size_t mCursor;
 	u32 mCursorColor;

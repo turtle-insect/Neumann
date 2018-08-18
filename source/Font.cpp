@@ -1,56 +1,4 @@
-#include <map>
 #include "Font.hpp"
-
-typedef struct
-{
-	u8 magic[4];
-	int version;
-	u16 npages;
-	u8 height;
-	u8 baseline;
-} ffnt_header_t;
-
-typedef struct
-{
-	u32 size, offset;
-} ffnt_pageentry_t;
-
-typedef struct
-{
-	u32 pos[0x100];
-	u8 widths[0x100];
-	u8 heights[0x100];
-	int8_t advances[0x100];
-	int8_t posX[0x100];
-	int8_t posY[0x100];
-} ffnt_pagehdr_t;
-
-typedef struct
-{
-	ffnt_pagehdr_t hdr;
-	u8 data[];
-} ffnt_page_t;
-
-extern const ffnt_header_t interuiregular14_nxfnt;
-extern const ffnt_header_t interuiregular18_nxfnt;
-extern const ffnt_header_t interuiregular20_nxfnt;
-extern const ffnt_header_t interuiregular24_nxfnt;
-
-std::map<Font::eType, const ffnt_header_t*> sFontMap;
-
-const ffnt_page_t* getFontPage(Font::eType type, u32 page)
-{
-	std::map<Font::eType, const ffnt_header_t*>::iterator ite = sFontMap.find(type);
-	if (ite == sFontMap.end()) return nullptr;
-	const ffnt_header_t* header = ite->second;
-
-	if (page >= header->npages) return nullptr;
-
-	ffnt_pageentry_t* entry = &((ffnt_pageentry_t*)(header + 1))[page];
-	if (!entry->size) return nullptr;
-
-	return (const ffnt_page_t*)((const u8*)header + entry->offset);
-}
 
 Font& Font::Instance()
 {
@@ -59,47 +7,61 @@ Font& Font::Instance()
 }
 
 Font::Font()
+	: mFontLibrary(nullptr)
+	, mFontFace(nullptr)
+	, mFontFaceState(1)
 {
-	sFontMap.insert(std::map<Font::eType, const ffnt_header_t*>::value_type(eType14, &interuiregular14_nxfnt));
-	sFontMap.insert(std::map<Font::eType, const ffnt_header_t*>::value_type(eType18, &interuiregular18_nxfnt));
-	sFontMap.insert(std::map<Font::eType, const ffnt_header_t*>::value_type(eType20, &interuiregular20_nxfnt));
-	sFontMap.insert(std::map<Font::eType, const ffnt_header_t*>::value_type(eType24, &interuiregular24_nxfnt));
+	u64 language = 0;
+	Result rc = setInitialize();
+	if (R_SUCCEEDED(rc)) rc = setGetSystemLanguage(&language);
+	setExit();
+
+	size_t totalCount;
+	PlFontData fonts[PlSharedFontType_Total];
+	rc = plGetSharedFont(language, fonts, PlSharedFontType_Total, &totalCount);
+	if(R_FAILED(rc)) return;
+
+	PlFontData font;
+	rc = plGetSharedFontByType(&font, PlSharedFontType_Standard);
+	if(R_FAILED(rc)) return;
+
+	FT_Error error = FT_Init_FreeType(&mFontLibrary);
+	if(error) return;
+
+	mFontFaceState = FT_New_Memory_Face(mFontLibrary, (const FT_Byte*)font.address, font.size, 0, &mFontFace);
 }
 
 Font::~Font()
 {
-	sFontMap.clear();
+	FT_Done_Face(mFontFace);
+	FT_Done_FreeType(mFontLibrary);
 }
 
-bool Font::GetGlyph(Glyph& glyph, eType type, u32 code)
+bool Font::GetGlyph(Glyph& glyph, size_t size, u32 code)
 {
-	const ffnt_page_t* page = getFontPage(type, code >> 8);
-	if (!page) return false;
+	if(mFontLibrary == nullptr) return false;
+	if(mFontFace == nullptr) return false;
+	if(mFontFaceState) return false;
 
-	code &= 0xFF;
-	u32 offset = page->hdr.pos[code];
-	if (offset == 0xFFFF) return false;
+	FT_Error error = FT_Set_Char_Size(mFontFace, 0, size << 6, 300, 300);
+	if(error) return false;
 
-	glyph.width = page->hdr.widths[code];
-	glyph.height = page->hdr.heights[code];
-	glyph.advance = page->hdr.advances[code];
-	glyph.posX = page->hdr.posX[code];
-	glyph.posY = page->hdr.posY[code];
-	glyph.data = &page->data[offset];
+	FT_UInt glyphIndex = FT_Get_Char_Index(mFontFace, code);
+	error = FT_Load_Glyph(mFontFace, glyphIndex, FT_LOAD_DEFAULT);
+	if(error) return false;
 
+	error = FT_Render_Glyph(mFontFace->glyph, FT_RENDER_MODE_NORMAL);
+	if(error) return false;
+
+	FT_Bitmap* bitmap = &mFontFace->glyph->bitmap;
+	if(bitmap->pixel_mode != FT_PIXEL_MODE_GRAY) return false;
+
+	glyph.width = bitmap->width;
+	glyph.height = bitmap->rows;
+	glyph.posX = mFontFace->glyph->bitmap_left;
+	glyph.posY = mFontFace->glyph->bitmap_top;
+	glyph.advanceX = mFontFace->glyph->advance.x >> 6;
+	glyph.pitch = bitmap->pitch;
+	glyph.data = bitmap->buffer;
 	return true;
-}
-
-u8 Font::GetHeight(eType type)
-{
-	std::map<Font::eType, const ffnt_header_t*>::iterator ite = sFontMap.find(type);
-	if (ite == sFontMap.end()) return 0;
-	return ite->second->height;
-}
-
-u8 Font::GetBaseLine(eType type)
-{
-	std::map<Font::eType, const ffnt_header_t*>::iterator ite = sFontMap.find(type);
-	if (ite == sFontMap.end()) return 0;
-	return ite->second->baseline;
 }

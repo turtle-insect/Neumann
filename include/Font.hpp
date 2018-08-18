@@ -1,6 +1,8 @@
 #pragma once
 
 #include <switch.h>
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
 struct Glyph
 {
@@ -8,27 +10,22 @@ struct Glyph
 	u8 height;
 	int8_t posX;
 	int8_t posY;
-	int8_t advance;
+	int8_t advanceX;
+	int8_t pitch;
 	const u8* data;
 };
 
 class Font
 {
 public:
-	enum eType
-	{
-		eType14,
-		eType18,
-		eType20,
-		eType24,
-	};
-
 	static Font& Instance();
-	bool GetGlyph(Glyph& glyph, eType type, u32 code);
-	u8 GetHeight(eType type);
-	u8 GetBaseLine(eType type);
+	bool GetGlyph(Glyph& glyph, size_t size, u32 code);
 
 private:
 	Font();
 	~Font();
+
+	FT_Library mFontLibrary;
+	FT_Face mFontFace;
+	FT_Error mFontFaceState;
 };

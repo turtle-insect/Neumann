@@ -44,7 +44,7 @@ void TitleScene::Entry()
 	mTitleDecorate.SetWidth(1280);
 	mTitleDecorate.SetHeight(64);
 
-	mGuide.AppendSprite(new Text(Font::eType24, "Select title and account by pressing ", FONT_BLACK), 0);
+	mGuide.AppendSprite(new Text("Select title and account by pressing ", 10, FONT_BLACK), 0);
 	mGuide.AppendSprite(new Bin(Bin::eType::eA), 0);
 }
 
@@ -56,7 +56,7 @@ IScene* TitleScene::Update(Input& input)
 		mTitle.Clear();
 		Device& device = Device::Instance();
 		std::vector<Title*>& titles = device.GetTitles();
-		mTitle.AppendSprite(new Text(Font::eType24, "Title : " + titles[mTitleList.GetCursor()]->GetName(), FONT_WHITE), 0);
+		mTitle.AppendSprite(new Text("Title : " + titles[mTitleList.GetCursor()]->GetName(), 12, FONT_WHITE), 0);
 	}
 
 	if (input.KeyDown(KEY_A) && mTitleList.GetCount())
@@ -125,7 +125,7 @@ IScene* AccountScene::Update(Input& input)
 		mTitle.Clear();
 		Device& device = Device::Instance();
 		std::vector<Account*>& Accounts = device.GetAccounts(mTitleID);
-		mTitle.AppendSprite(new Text(Font::eType24, "Account : " + Accounts[mAccountList.GetCursor()]->GetName(), FONT_WHITE), 0);
+		mTitle.AppendSprite(new Text("Account : " + Accounts[mAccountList.GetCursor()]->GetName(), 12, FONT_WHITE), 0);
 	}
 
 	if (input.KeyDown(KEY_A) && mAccountList.GetCount())
@@ -172,16 +172,16 @@ void ActionScene::Entry()
 	mTitleDecorate.SetWidth(1280);
 	mTitleDecorate.SetHeight(64);
 
-	mTitle.AppendSprite(new Text(Font::eType24, "Action", FONT_WHITE), 0);
+	mTitle.AppendSprite(new Text("Action", 12, FONT_WHITE), 0);
 
 	mGuide.AppendSprite(new Bin(Bin::eType::eX), 10);
-	mGuide.AppendSprite(new Text(Font::eType24, "Backup", FONT_BLACK), 20);
+	mGuide.AppendSprite(new Text("Backup", 10, FONT_BLACK), 20);
 	mGuide.AppendSprite(new Bin(Bin::eType::eY), 10);
-	mGuide.AppendSprite(new Text(Font::eType24, "Resotre", FONT_BLACK), 20);
+	mGuide.AppendSprite(new Text("Resotre", 10, FONT_BLACK), 20);
 	mGuide.AppendSprite(new Bin(Bin::eType::eMinus), 10);
-	mGuide.AppendSprite(new Text(Font::eType24, "Save Remove", FONT_RED), 20);
+	mGuide.AppendSprite(new Text("Save Remove", 10, FONT_RED), 20);
 	mGuide.AppendSprite(new Bin(Bin::eType::eB), 10);
-	mGuide.AppendSprite(new Text(Font::eType24, "Back", FONT_BLACK), 20);
+	mGuide.AppendSprite(new Text("Back", 10, FONT_BLACK), 20);
 }
 
 IScene* ActionScene::Update(Input& input)
@@ -236,7 +236,7 @@ void ActionScene::CreateBackupList()
 	std::sort(paths.begin(), paths.end(), std::greater<std::string>());
 	for (size_t i = 0; i < paths.size(); i++)
 	{
-		Text* text = new Text(Font::eType24, paths[i], FONT_BLACK);
+		Text* text = new Text(paths[i], 10, FONT_BLACK);
 		mTextList.push_back(text);
 		mBackupList.AppendSprite(text);
 	}
@@ -261,9 +261,9 @@ void ConfirmScene::Entry()
 	mTitleDecorate.SetWidth(1280);
 	mTitleDecorate.SetHeight(64);
 
-	mTitle.AppendSprite(new Text(Font::eType24, "Confirm", FONT_WHITE), 0);
+	mTitle.AppendSprite(new Text("Confirm", 12, FONT_WHITE), 0);
 
-	mGuide.AppendSprite(new Text(Font::eType24, "If you Resotre pressing ", FONT_BLACK), 0);
+	mGuide.AppendSprite(new Text("If you Resotre pressing ", 10, FONT_BLACK), 0);
 	mGuide.AppendSprite(new Bin(Bin::eType::eA), 0);
 }
 
@@ -310,7 +310,7 @@ void DebugScene::Entry()
 	std::vector<std::string> logs = debug.GetLogs();
 	for (size_t i = 0; i < logs.size(); i++)
 	{
-		Text* text = new Text(Font::eType24, logs[i], FONT_BLACK);
+		Text* text = new Text(logs[i], 10, FONT_BLACK);
 		mTextList.push_back(text);
 		mLogList.AppendSprite(text);
 	}
@@ -319,7 +319,7 @@ void DebugScene::Entry()
 	mTitleDecorate.SetWidth(1280);
 	mTitleDecorate.SetHeight(64);
 
-	mTitle.AppendSprite(new Text(Font::eType24, "Debug", FONT_WHITE), 0);
+	mTitle.AppendSprite(new Text("Debug", 12, FONT_WHITE), 0);
 }
 
 IScene* DebugScene::Update(Input& input)

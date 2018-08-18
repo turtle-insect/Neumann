@@ -8,7 +8,7 @@
 class Text : public Sprite
 {
 public:
-	Text(Font::eType type, std::string text, u32 color);
+	Text(std::string text, size_t size, u32 color);
 	~Text();
 
 	void Draw(FrameBuffer& frameBuffer, size_t left, size_t top);
