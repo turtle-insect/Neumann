@@ -1,19 +1,17 @@
 #include <algorithm>
+#include "Util.hpp"
 #include "Device.hpp"
 #include "Input.hpp"
 #include "Image.hpp"
 #include "Text.hpp"
 #include "Bin.hpp"
+#include "Toast.hpp"
 #include "FrameBuffer.hpp"
 #include "Title.hpp"
 #include "Account.hpp"
 #include "SaveData.hpp"
 #include "Debug.hpp"
 #include "Scene.hpp"
-
-const u32 FONT_BLACK = 0xFF000000;
-const u32 FONT_WHITE = 0xFFFFFFFF;
-const u32 FONT_RED = 0xFF0000FF;
 
 IScene* BootScene::Update(Input& input)
 {
@@ -44,7 +42,7 @@ void TitleScene::Entry()
 	mTitleDecorate.SetWidth(1280);
 	mTitleDecorate.SetHeight(64);
 
-	mGuide.AppendSprite(new Text("Select title and account by pressing ", 10, FONT_BLACK), 0);
+	mGuide.AppendSprite(new Text("Select title and account by pressing ", 10, COLOR_BLACK), 0);
 	mGuide.AppendSprite(new Bin(Bin::eType::eA), 0);
 }
 
@@ -56,7 +54,7 @@ IScene* TitleScene::Update(Input& input)
 		mTitle.Clear();
 		Device& device = Device::Instance();
 		std::vector<Title*>& titles = device.GetTitles();
-		mTitle.AppendSprite(new Text("Title : " + titles[mTitleList.GetCursor()]->GetName(), 12, FONT_WHITE), 0);
+		mTitle.AppendSprite(new Text("Title : " + titles[mTitleList.GetCursor()]->GetName(), 12, COLOR_WHITE), 0);
 	}
 
 	if (input.KeyDown(KEY_A) && mTitleList.GetCount())
@@ -125,7 +123,7 @@ IScene* AccountScene::Update(Input& input)
 		mTitle.Clear();
 		Device& device = Device::Instance();
 		std::vector<Account*>& Accounts = device.GetAccounts(mTitleID);
-		mTitle.AppendSprite(new Text("Account : " + Accounts[mAccountList.GetCursor()]->GetName(), 12, FONT_WHITE), 0);
+		mTitle.AppendSprite(new Text("Account : " + Accounts[mAccountList.GetCursor()]->GetName(), 12, COLOR_WHITE), 0);
 	}
 
 	if (input.KeyDown(KEY_A) && mAccountList.GetCount())
@@ -172,20 +170,21 @@ void ActionScene::Entry()
 	mTitleDecorate.SetWidth(1280);
 	mTitleDecorate.SetHeight(64);
 
-	mTitle.AppendSprite(new Text("Action", 12, FONT_WHITE), 0);
+	mTitle.AppendSprite(new Text("Action", 12, COLOR_WHITE), 0);
 
 	mGuide.AppendSprite(new Bin(Bin::eType::eX), 10);
-	mGuide.AppendSprite(new Text("Backup", 10, FONT_BLACK), 20);
+	mGuide.AppendSprite(new Text("Backup", 10, COLOR_BLACK), 20);
 	mGuide.AppendSprite(new Bin(Bin::eType::eY), 10);
-	mGuide.AppendSprite(new Text("Resotre", 10, FONT_BLACK), 20);
+	mGuide.AppendSprite(new Text("Resotre", 10, COLOR_BLACK), 20);
 	mGuide.AppendSprite(new Bin(Bin::eType::eMinus), 10);
-	mGuide.AppendSprite(new Text("Save Remove", 10, FONT_RED), 20);
+	mGuide.AppendSprite(new Text("Save Remove", 10, COLOR_RED), 20);
 	mGuide.AppendSprite(new Bin(Bin::eType::eB), 10);
-	mGuide.AppendSprite(new Text("Back", 10, FONT_BLACK), 20);
+	mGuide.AppendSprite(new Text("Back", 10, COLOR_BLACK), 20);
 }
 
 IScene* ActionScene::Update(Input& input)
 {
+	mToast.Update();
 	mBackupList.Update(input);
 	if (input.KeyDown(KEY_Y) && mBackupList.GetCount())
 	{
@@ -196,14 +195,16 @@ IScene* ActionScene::Update(Input& input)
 	{
 		// Backup
 		SaveData save(mTitleID, mUserID);
-		save.Backup();
+		bool result = save.Backup();
+		mToast.Popup(result ? "Success!" : "Fail!", result ? COLOR_BLACK : COLOR_RED);
 		CreateBackupList();
 	}
 	else if (input.KeyDown(KEY_MINUS))
 	{
 		// Save Remove
 		SaveData save(mTitleID, mUserID);
-		save.Delete();
+		bool result = save.Delete();
+		mToast.Popup(result ? "Success!" : "Fail!", result ? COLOR_BLACK : COLOR_RED);
 		CreateBackupList();
 	}
 	else if (input.KeyDown(KEY_B))
@@ -217,6 +218,7 @@ void ActionScene::Draw(FrameBuffer& frameBuffer)
 {
 	mTitleDecorate.Draw(frameBuffer, 0, 0);
 	mTitle.Draw(frameBuffer, (frameBuffer.GetWidth() - mTitle.Width()) / 2, (mTitleDecorate.Height() - mTitle.Height()) / 2);
+	mToast.Draw(frameBuffer, (frameBuffer.GetWidth() - mToast.Width() - 10), mTitleDecorate.Height() + 10);
 	mBackupList.Draw(frameBuffer, 20, mTitleDecorate.Height() + 20);
 	mGuide.Draw(frameBuffer, frameBuffer.GetWidth() - mGuide.Width() - 10, frameBuffer.GetHeight() - mGuide.Height() - 10);
 }
@@ -236,7 +238,7 @@ void ActionScene::CreateBackupList()
 	std::sort(paths.begin(), paths.end(), std::greater<std::string>());
 	for (size_t i = 0; i < paths.size(); i++)
 	{
-		Text* text = new Text(paths[i], 10, FONT_BLACK);
+		Text* text = new Text(paths[i], 10, COLOR_BLACK);
 		mTextList.push_back(text);
 		mBackupList.AppendSprite(text);
 	}
@@ -261,20 +263,25 @@ void ConfirmScene::Entry()
 	mTitleDecorate.SetWidth(1280);
 	mTitleDecorate.SetHeight(64);
 
-	mTitle.AppendSprite(new Text("Confirm", 12, FONT_WHITE), 0);
+	mTitle.AppendSprite(new Text("Confirm", 12, COLOR_WHITE), 0);
 
-	mGuide.AppendSprite(new Text("If you Resotre pressing ", 10, FONT_BLACK), 0);
+	mGuide.AppendSprite(new Text("If you Resotre pressing ", 10, COLOR_BLACK), 0);
 	mGuide.AppendSprite(new Bin(Bin::eType::eA), 0);
 }
 
 IScene* ConfirmScene::Update(Input& input)
 {
+	if(mToast.Update())
+	{
+		return new ActionScene(mTitleID, mUserID);
+	}
+
 	if (input.KeyDown(KEY_A))
 	{
 		// Resotre
 		SaveData save(mTitleID, mUserID);
-		save.Restore(mFileName);
-		return new ActionScene(mTitleID, mUserID);
+		bool result = save.Restore(mFileName);
+		mToast.Popup(result ? "Success!" : "Fail!", result ? COLOR_BLACK : COLOR_RED);
 	}
 	else if (input.KeyDown(KEY_B))
 	{
@@ -287,6 +294,7 @@ void ConfirmScene::Draw(FrameBuffer& frameBuffer)
 {
 	mTitleDecorate.Draw(frameBuffer, 0, 0);
 	mTitle.Draw(frameBuffer, (frameBuffer.GetWidth() - mTitle.Width()) / 2, (mTitleDecorate.Height() - mTitle.Height()) / 2);
+	mToast.Draw(frameBuffer, (frameBuffer.GetWidth() - mToast.Width() - 10), mTitleDecorate.Height() + 10);
 	mGuide.Draw(frameBuffer, (frameBuffer.GetWidth() - mGuide.Width()) / 2, mTitleDecorate.Height() + (frameBuffer.GetHeight() - mGuide.Height() - mTitleDecorate.Height()) / 2);
 }
 
@@ -310,7 +318,7 @@ void DebugScene::Entry()
 	std::vector<std::string> logs = debug.GetLogs();
 	for (size_t i = 0; i < logs.size(); i++)
 	{
-		Text* text = new Text(logs[i], 10, FONT_BLACK);
+		Text* text = new Text(logs[i], 10, COLOR_BLACK);
 		mTextList.push_back(text);
 		mLogList.AppendSprite(text);
 	}
@@ -319,7 +327,7 @@ void DebugScene::Entry()
 	mTitleDecorate.SetWidth(1280);
 	mTitleDecorate.SetHeight(64);
 
-	mTitle.AppendSprite(new Text("Debug", 12, FONT_WHITE), 0);
+	mTitle.AppendSprite(new Text("Debug", 12, COLOR_WHITE), 0);
 }
 
 IScene* DebugScene::Update(Input& input)

@@ -3,8 +3,6 @@
 #include <switch.h>
 #include "Sprite.hpp"
 
-class FrameBuffer;
-
 class Image : public Sprite
 {
 public:

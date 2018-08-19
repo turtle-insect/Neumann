@@ -4,6 +4,7 @@
 
 #include "ItemList.hpp"
 #include "Rectangle.hpp"
+#include "Toast.hpp"
 #include "HorizontalSprites.hpp"
 #include "IScene.hpp"
 
@@ -75,6 +76,7 @@ private:
 	ItemList mBackupList;
 	Rectangle mTitleDecorate;
 	HorizontalSprites mTitle;
+	Toast mToast;
 	HorizontalSprites mGuide;
 	std::vector<Text*> mTextList;
 };
@@ -96,6 +98,7 @@ private:
 
 	Rectangle mTitleDecorate;
 	HorizontalSprites mTitle;
+	Toast mToast;
 	HorizontalSprites mGuide;
 };
 

@@ -6,7 +6,7 @@
 #include "FrameBuffer.hpp"
 #include "ItemList.hpp"
 
-const size_t CursorWeight = 3;
+const size_t CursorWeight = 5;
 
 ItemList::ItemList()
 	: mColumn(0)

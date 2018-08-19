@@ -1,4 +1,5 @@
 #include <cstring>
+#include "Util.hpp"
 #include "FrameBuffer.hpp"
 #include "Text.hpp"
 
