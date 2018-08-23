@@ -15,3 +15,4 @@ Nintendo Switch SaveDate Backup &amp; Restore Tool
 
 # Special Thanks
 [EdiZon](https://github.com/thomasnet-mc/EdiZon)
+[switch-portlibs-examples](https://github.com/switchbrew/switch-portlibs-examples)
