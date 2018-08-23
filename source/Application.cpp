@@ -26,10 +26,12 @@ Application::Application()
 	accountInitialize();
 	gfxInitDefault();
 	plInitialize();
+	timeInitialize();
 }
 
 Application::~Application()
 {
+	timeExit();
 	plExit();
 	gfxExit();
 	accountExit();

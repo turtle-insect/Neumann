@@ -15,14 +15,14 @@ bool MountDeviceSaveData(FsFileSystem& fs, u64 titleID, u128 userID)
 {
 	Result rc;
 	rc = fsMount_SaveData(&fs, titleID, userID);
-	if(R_FAILED(rc))
+	if (R_FAILED(rc))
 	{
 		fsdevUnmountDevice(SAVE_DEV.c_str());
 		return false;
 	}
 
 	int ret = fsdevMountDevice(SAVE_DEV.c_str(), fs);
-	if(ret == -1)
+	if (ret == -1)
 	{
 		fsdevUnmountDevice(SAVE_DEV.c_str());
 		return false;
@@ -83,7 +83,7 @@ bool copyFile(const std::string& srcFile, const std::string& dstFile)
 
 	u64 offset = 0;
 	char* buf = new char[0x50000];
-	while(offset < size)
+	while (offset < size)
 	{
 		size_t read = fread(buf, 1, 0x50000, src);
 		fwrite(buf, 1, read, dst);
@@ -91,8 +91,8 @@ bool copyFile(const std::string& srcFile, const std::string& dstFile)
 	}
 
 	delete [] buf;
-	fclose(src);
 	fclose(dst);
+	fclose(src);
 
 	return true;
 }
@@ -103,23 +103,23 @@ void copyPath(const std::string& srcPath, const std::string& dstPath, bool isWri
 	if(dir == nullptr) return;
 
 	struct dirent* ent;
-	while((ent = readdir(dir)))
+	while ((ent = readdir(dir)))
 	{
 		if (!strcmp(ent->d_name, ".") || !strcmp(ent->d_name, "..")) continue;
 
 		std::string srcFile = srcPath + "/" + ent->d_name;
 		std::string dstFile = dstPath + "/" + ent->d_name;
 
-		if(isDirectory(srcFile))
+		if (isDirectory(srcFile))
 		{
 			mkdir(dstFile.c_str(), 0700);
-			if(isWriteNAND) fsdevCommitDevice(SAVE_DEV.c_str());
+			if (isWriteNAND) fsdevCommitDevice(SAVE_DEV.c_str());
 			copyPath(srcFile, dstFile, isWriteNAND);
 		}
 		else
 		{
 			copyFile(srcFile, dstFile);
-			if(isWriteNAND) fsdevCommitDevice(SAVE_DEV.c_str());
+			if (isWriteNAND) fsdevCommitDevice(SAVE_DEV.c_str());
 		}
 	}
 	closedir(dir);
@@ -128,29 +128,29 @@ void copyPath(const std::string& srcPath, const std::string& dstPath, bool isWri
 void deletePath(const std::string& srcPath, bool isWriteNAND)
 {
 	DIR* dir = opendir(srcPath.c_str());
-	if(dir == nullptr) return;
+	if (dir == nullptr) return;
 
 	struct dirent* ent;
-	while((ent = readdir(dir)))
+	while ((ent = readdir(dir)))
 	{
 		if (!strcmp(ent->d_name, ".") || !strcmp(ent->d_name, "..")) continue;
 
 		std::string srcFile = srcPath + "/" + ent->d_name;
-		if(isDirectory(srcFile))
+		if (isDirectory(srcFile))
 		{
 			deletePath(srcFile, isWriteNAND);
-			if(isWriteNAND) fsdevCommitDevice(SAVE_DEV.c_str());
+			if (isWriteNAND) fsdevCommitDevice(SAVE_DEV.c_str());
 		}
 		else
 		{
 			unlink(srcFile.c_str());
-			if(isWriteNAND) fsdevCommitDevice(SAVE_DEV.c_str());
+			if (isWriteNAND) fsdevCommitDevice(SAVE_DEV.c_str());
 		}
 	}
 	closedir(dir);
 
 	rmdir(srcPath.c_str());
-	if(isWriteNAND) fsdevCommitDevice(SAVE_DEV.c_str());
+	if (isWriteNAND) fsdevCommitDevice(SAVE_DEV.c_str());
 }
 
 SaveData::SaveData(u64 titleID, u128 userID)
@@ -166,7 +166,7 @@ SaveData::~SaveData()
 bool SaveData::Backup()
 {
 	FsFileSystem fs;
-	if(! MountDeviceSaveData(fs, mTitleID, mUserID)) return false;
+	if(!MountDeviceSaveData(fs, mTitleID, mUserID)) return false;
 	std::string dstPath = makeBackupPath(mTitleID);
 	copyPath(SAVE_DEV + ":/", dstPath, false);
 	fsdevUnmountDevice(SAVE_DEV.c_str());
@@ -186,12 +186,12 @@ void SaveData::GetBackupPaths(std::vector<std::string>& paths)
 {
 	std::string titlePath = getBackupTitlePath(mTitleID);
 	DIR *dir = opendir(titlePath.c_str());
-	if(dir == nullptr) return;
+	if (dir == nullptr) return;
 
 	struct dirent* ent;
-	while((ent = readdir(dir)))
+	while ((ent = readdir(dir)))
 	{
-		if (!strcmp(ent->d_name, ".") || !strcmp(ent->d_name, "..")) continue;
+		if(!strcmp(ent->d_name, ".") || !strcmp(ent->d_name, "..")) continue;
 		std::string file = titlePath + "/" + ent->d_name;
 		if(isDirectory(file)) paths.push_back(ent->d_name);
 	}
@@ -201,7 +201,7 @@ void SaveData::GetBackupPaths(std::vector<std::string>& paths)
 bool SaveData::Restore(std::string& filePath)
 {
 	FsFileSystem fs;
-	if(! MountDeviceSaveData(fs, mTitleID, mUserID)) return false;
+	if (!MountDeviceSaveData(fs, mTitleID, mUserID)) return false;
 	deletePath(SAVE_DEV + ":/", true);
 	std::string titlePath = getBackupTitlePath(mTitleID);
 	copyPath(titlePath + "/" + filePath, SAVE_DEV + ":/", true);
