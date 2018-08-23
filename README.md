@@ -14,5 +14,5 @@ Nintendo Switch SaveDate Backup &amp; Restore Tool
 * pacman -S switch-freetype
 
 # Special Thanks
-[EdiZon](https://github.com/thomasnet-mc/EdiZon)
+[EdiZon](https://github.com/thomasnet-mc/EdiZon)  
 [switch-portlibs-examples](https://github.com/switchbrew/switch-portlibs-examples)
