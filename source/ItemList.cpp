@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <cstring>
 #include <cstdint>
+#include "Util.hpp"
 #include "Image.hpp"
 #include "Input.hpp"
 #include "FrameBuffer.hpp"
@@ -8,13 +9,14 @@
 
 const size_t CursorWeight = 5;
 
+
 ItemList::ItemList()
 	: mColumn(0)
 	, mRow(0)
 	, mMaxHeight(0)
 	, mMargin(0)
 	, mCursor(0)
-	, mCursorColor(0xFF00FF00)
+	, mCursorColor(CURSOR_COLOR)
 {
 	mFrame.SetMode(Rectangle::eMode::eFrame);
 	mFrame.SetWeight(CursorWeight);
@@ -59,7 +61,7 @@ void ItemList::Update(Input& input)
 	if (index < 0) index = mSprites.size() - 1;
 	if (index >= (int)mSprites.size()) index = 0;
 	mCursor = index;
-	
+
 	mCursorColor += 0x02000000;
 	mFrame.SetColor(mCursorColor);
 }

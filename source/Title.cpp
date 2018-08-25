@@ -10,7 +10,7 @@ Title::Title(u64 titleID)
 	size_t outsize = 0;
 	Result rc = nsGetApplicationControlData(1, titleID, &data, sizeof(data), &outsize);
 	if (R_FAILED(rc)) return;
-	if (outsize < sizeof(data.nacp))return;
+	if (outsize < sizeof(data.nacp)) return;
 
 	NacpLanguageEntry* entry = nullptr;
 	rc = nacpGetLanguageEntry(&data.nacp, &entry);

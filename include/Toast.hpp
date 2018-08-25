@@ -19,7 +19,6 @@ public:
 	void Draw(FrameBuffer& frameBuffer, size_t left, size_t top);
 
 private:
-	bool mStart;
 	uint mTimer;
 	Text* mText;
 	Rectangle mBody;

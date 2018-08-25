@@ -10,6 +10,7 @@
 
 const std::string SAVE_DEV = "save";
 const std::string ROOT_DIR = "/Neumann/";
+const size_t BUFFER_SIZE = 0x50000;
 
 bool MountDeviceSaveData(FsFileSystem& fs, u64 titleID, u128 userID)
 {
@@ -77,17 +78,12 @@ bool copyFile(const std::string& srcFile, const std::string& dstFile)
 		return false;
 	}
 
-	fseek(src, 0, SEEK_END);
-	size_t size = ftell(src);
-	rewind(src);
+	char* buf = new char[BUFFER_SIZE];
 
-	u64 offset = 0;
-	char* buf = new char[0x50000];
-	while (offset < size)
+	while (!feof(src))
 	{
-		size_t read = fread(buf, 1, 0x50000, src);
-		fwrite(buf, 1, read, dst);
-		offset += read;
+		size_t size = fread(buf, 1, BUFFER_SIZE, src);
+		fwrite(buf, 1, size, dst);
 	}
 
 	delete [] buf;

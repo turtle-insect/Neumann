@@ -6,6 +6,7 @@
 static const u32 COLOR_BLACK = 0xFF000000;
 static const u32 COLOR_WHITE = 0xFFFFFFFF;
 static const u32 COLOR_RED = 0xFF0000FF;
+static const u32 CURSOR_COLOR = 0xFF00FF00;
 
 inline u8 blendColor(u32 src, u32 dst, u8 alpha)
 {

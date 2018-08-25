@@ -6,8 +6,7 @@
 static const uint MAX_TIMER = 300;
 
 Toast::Toast()
-	: mStart(false)
-	, mTimer(0)
+	: mTimer(0)
 	, mText(nullptr)
 {
 	mBody.SetColor(COLOR_WHITE);
@@ -23,8 +22,7 @@ Toast::~Toast()
 
 void Toast::Popup(std::string message, u32 color)
 {
-	mTimer = 0;
-	mStart = true;
+	mTimer = 1;
 	delete mText;
 	mText = new Text(message, 7, color);
 	mWidth = mText->Width() + 30;
@@ -38,12 +36,10 @@ void Toast::Popup(std::string message, u32 color)
 
 bool Toast::Update()
 {
-	if(!mStart) return false;
+	if(!mTimer) return false;
 
-	mTimer++;
-	if(mTimer >= MAX_TIMER)
+	if(++mTimer >= MAX_TIMER)
 	{
-		mStart = false;
 		mTimer = 0;
 		delete mText;
 		mText = nullptr;
@@ -55,7 +51,7 @@ bool Toast::Update()
 
 void Toast::Draw(FrameBuffer& frameBuffer, size_t left, size_t top)
 {
-	if(!mStart) return;
+	if(!mTimer) return;
 	if(mText == nullptr) return;
 
 	mBody.Draw(frameBuffer, left, top);
