@@ -139,13 +139,13 @@ void deletePath(const std::string& srcPath, bool isWriteNAND)
 		if (isDirectory(srcFile))
 		{
 			deletePath(srcFile, isWriteNAND);
-			if (isWriteNAND) fsdevCommitDevice(SAVE_DEV.c_str());
 		}
 		else
 		{
 			unlink(srcFile.c_str());
-			if (isWriteNAND) fsdevCommitDevice(SAVE_DEV.c_str());
 		}
+
+		if (isWriteNAND) fsdevCommitDevice(SAVE_DEV.c_str());
 	}
 	closedir(dir);
 
