@@ -144,7 +144,7 @@ void AccountScene::Draw(FrameBuffer& frameBuffer)
 	mTitleDecorate.Draw(frameBuffer, 0, 0);
 	mTitle.Draw(frameBuffer, (frameBuffer.GetWidth() - mTitle.Width()) / 2, (mTitleDecorate.Height() - mTitle.Height()) / 2);
 	mTitleList.Draw(frameBuffer, 0, mTitleDecorate.Height());
-	mAccountList.Draw(frameBuffer, 30, 550);
+	mAccountList.Draw(frameBuffer, 30, 584);
 }
 
 ActionScene::ActionScene(u64 titleID, u128 userID)
