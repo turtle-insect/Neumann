@@ -2,16 +2,33 @@
 
 FrameBuffer::FrameBuffer()
 	: mBuffer(nullptr)
+	, mWidth(1280)
+	, mHeight(720)
 {
 }
 
 FrameBuffer::~FrameBuffer()
 {
+	framebufferClose(&mFrameBuffer);
+	nwindowClose(mWindow);
 }
 
-void FrameBuffer::Update()
+void FrameBuffer::Init()
 {
-	mBuffer = gfxGetFramebuffer(&mWidth, &mHeight);
+	mWindow = nwindowGetDefault();
+	nwindowSetDimensions(mWindow, mWidth, mHeight);
+	framebufferCreate(&mFrameBuffer, mWindow, mWidth, mHeight, PIXEL_FORMAT_RGBA_8888, 2);
+	 framebufferMakeLinear(&mFrameBuffer);
+}
+
+void FrameBuffer::Begin()
+{
+	mBuffer = (u8*)framebufferBegin(&mFrameBuffer, nullptr);
+}
+
+void FrameBuffer::End()
+{
+	framebufferEnd(&mFrameBuffer);
 }
 
 u8* FrameBuffer::GetBuffer()

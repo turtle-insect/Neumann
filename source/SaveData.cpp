@@ -108,6 +108,8 @@ void copyPath(const std::string& srcPath, const std::string& dstPath, bool isWri
 
 		if (isDirectory(srcFile))
 		{
+			srcFile += "/";
+			dstFile += "/";
 			mkdir(dstFile.c_str(), 0700);
 			if (isWriteNAND) fsdevCommitDevice(SAVE_DEV.c_str());
 			copyPath(srcFile, dstFile, isWriteNAND);
@@ -134,7 +136,7 @@ void deletePath(const std::string& srcPath, bool isWriteNAND)
 		std::string srcFile = srcPath + "/" + ent->d_name;
 		if (isDirectory(srcFile))
 		{
-			deletePath(srcFile, isWriteNAND);
+			deletePath(srcFile + "/", isWriteNAND);
 		}
 		else
 		{

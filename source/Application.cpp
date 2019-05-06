@@ -24,7 +24,6 @@ Application::Application()
 	fsInitialize();
 	nsInitialize();
 	accountInitialize();
-	gfxInitDefault();
 	plInitialize();
 	timeInitialize();
 }
@@ -33,7 +32,6 @@ Application::~Application()
 {
 	timeExit();
 	plExit();
-	gfxExit();
 	accountExit();
 	nsExit();
 	fsExit();
@@ -46,11 +44,12 @@ void Application::Run()
 	device.Initialize();
 
 	IScene* scene = new BootScene();
+	mFrameBuffer.Init();
 
 	while (appletMainLoop())
 	{
 		mInput.Update();
-		mFrameBuffer.Update();
+		mFrameBuffer.Begin();
 
 		if (mInput.KeyDown(KEY_PLUS)) break;
 
@@ -64,9 +63,6 @@ void Application::Run()
 		}
 		clearScreen(mFrameBuffer, 0xFFEAEAEA);
 		scene->Draw(mFrameBuffer);
-
-		gfxFlushBuffers();
-		gfxSwapBuffers();
-		gfxWaitForVsync();
+		mFrameBuffer.End();
 	}
 }
