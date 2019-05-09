@@ -1,6 +1,8 @@
 #include <algorithm>
 #include "Util.hpp"
 #include "Device.hpp"
+#include "Resource.hpp"
+#include "MessageID.hpp"
 #include "Input.hpp"
 #include "Image.hpp"
 #include "Text.hpp"
@@ -12,6 +14,8 @@
 #include "SaveData.hpp"
 #include "Debug.hpp"
 #include "Scene.hpp"
+
+#define MSGID(id) Resource::Instance().GetMessage(id)
 
 IScene* BootScene::Update(Input& input)
 {
@@ -42,7 +46,7 @@ void TitleScene::Entry()
 	mTitleDecorate.SetWidth(1280);
 	mTitleDecorate.SetHeight(64);
 
-	mGuide.AppendSprite(new Text("Select title and account by pressing ", 10, COLOR_BLACK), 0);
+	mGuide.AppendSprite(new Text(MSGID(MSGID_TITLESCENE_DESCRIPTION), 10, COLOR_BLACK), 0);
 	mGuide.AppendSprite(new Bin(Bin::eType::eA), 0);
 }
 
@@ -54,7 +58,8 @@ IScene* TitleScene::Update(Input& input)
 		mTitle.Clear();
 		Device& device = Device::Instance();
 		std::vector<Title*>& titles = device.GetTitles();
-		mTitle.AppendSprite(new Text("Title : " + titles[mTitleList.GetCursor()]->GetName(), 12, COLOR_WHITE), 0);
+		mTitle.AppendSprite(new Text(MSGID(MSGID_TITLESCENE_TITLE)
+			 + titles[mTitleList.GetCursor()]->GetName(), 12, COLOR_WHITE), 0);
 	}
 
 	if (input.KeyDown(KEY_A) && mTitleList.GetCount())
@@ -123,7 +128,8 @@ IScene* AccountScene::Update(Input& input)
 		mTitle.Clear();
 		Device& device = Device::Instance();
 		std::vector<Account*>& Accounts = device.GetAccounts(mTitleID);
-		mTitle.AppendSprite(new Text("Account : " + Accounts[mAccountList.GetCursor()]->GetName(), 12, COLOR_WHITE), 0);
+		mTitle.AppendSprite(new Text(MSGID(MSGID_ACCOUNTSCENE_TITLE)
+			 + Accounts[mAccountList.GetCursor()]->GetName(), 12, COLOR_WHITE), 0);
 	}
 
 	if (input.KeyDown(KEY_A) && mAccountList.GetCount())
@@ -170,16 +176,16 @@ void ActionScene::Entry()
 	mTitleDecorate.SetWidth(1280);
 	mTitleDecorate.SetHeight(64);
 
-	mTitle.AppendSprite(new Text("Action", 12, COLOR_WHITE), 0);
+	mTitle.AppendSprite(new Text(MSGID(MSGID_ACTIONSCENE_TITLE), 12, COLOR_WHITE), 0);
 
 	mGuide.AppendSprite(new Bin(Bin::eType::eX), 10);
-	mGuide.AppendSprite(new Text("Backup", 10, COLOR_BLACK), 20);
+	mGuide.AppendSprite(new Text(MSGID(MSGID_BACKUP), 10, COLOR_BLACK), 20);
 	mGuide.AppendSprite(new Bin(Bin::eType::eY), 10);
-	mGuide.AppendSprite(new Text("Resotre", 10, COLOR_BLACK), 20);
+	mGuide.AppendSprite(new Text(MSGID(MSGID_RESOTRE), 10, COLOR_BLACK), 20);
 	mGuide.AppendSprite(new Bin(Bin::eType::eMinus), 10);
-	mGuide.AppendSprite(new Text("Save Remove", 10, COLOR_RED), 20);
+	mGuide.AppendSprite(new Text(MSGID(MSGID_REMOVE), 10, COLOR_RED), 20);
 	mGuide.AppendSprite(new Bin(Bin::eType::eB), 10);
-	mGuide.AppendSprite(new Text("Back", 10, COLOR_BLACK), 20);
+	mGuide.AppendSprite(new Text(MSGID(MSGID_BACK), 10, COLOR_BLACK), 20);
 }
 
 IScene* ActionScene::Update(Input& input)
@@ -196,7 +202,7 @@ IScene* ActionScene::Update(Input& input)
 		// Backup
 		SaveData save(mTitleID, mUserID);
 		bool result = save.Backup();
-		mToast.Popup(result ? "Success!" : "Fail!", result ? COLOR_BLACK : COLOR_RED);
+		mToast.Popup(result ? MSGID(MSGID_SUCCESS) : MSGID(MSGID_FAIL), result ? COLOR_BLACK : COLOR_RED);
 		CreateBackupList();
 	}
 	else if (input.KeyDown(KEY_MINUS))
@@ -204,7 +210,7 @@ IScene* ActionScene::Update(Input& input)
 		// Save Remove
 		SaveData save(mTitleID, mUserID);
 		bool result = save.Delete();
-		mToast.Popup(result ? "Success!" : "Fail!", result ? COLOR_BLACK : COLOR_RED);
+		mToast.Popup(result ? MSGID(MSGID_SUCCESS) : MSGID(MSGID_FAIL), result ? COLOR_BLACK : COLOR_RED);
 		CreateBackupList();
 	}
 	else if (input.KeyDown(KEY_B))
@@ -259,13 +265,13 @@ ConfirmScene::~ConfirmScene()
 
 void ConfirmScene::Entry()
 {
-	mTitleDecorate.SetColor(0xFF000000);
+	mTitleDecorate.SetColor(COLOR_BLACK);
 	mTitleDecorate.SetWidth(1280);
 	mTitleDecorate.SetHeight(64);
 
-	mTitle.AppendSprite(new Text("Confirm", 12, COLOR_WHITE), 0);
+	mTitle.AppendSprite(new Text(MSGID(MSGID_CONFIRMSCENE_TITLE), 12, COLOR_WHITE), 0);
 
-	mGuide.AppendSprite(new Text("If you Resotre pressing ", 10, COLOR_BLACK), 0);
+	mGuide.AppendSprite(new Text(MSGID(MSGID_CONFIRMSCENE_DESCRIPTION), 10, COLOR_BLACK), 0);
 	mGuide.AppendSprite(new Bin(Bin::eType::eA), 0);
 }
 
@@ -281,7 +287,7 @@ IScene* ConfirmScene::Update(Input& input)
 		// Resotre
 		SaveData save(mTitleID, mUserID);
 		bool result = save.Restore(mFileName);
-		mToast.Popup(result ? "Success!" : "Fail!", result ? COLOR_BLACK : COLOR_RED);
+		mToast.Popup(result ? MSGID(MSGID_SUCCESS) : MSGID(MSGID_FAIL), result ? COLOR_BLACK : COLOR_RED);
 	}
 	else if (input.KeyDown(KEY_B))
 	{
@@ -327,7 +333,7 @@ void DebugScene::Entry()
 	mTitleDecorate.SetWidth(1280);
 	mTitleDecorate.SetHeight(64);
 
-	mTitle.AppendSprite(new Text("Debug", 12, COLOR_WHITE), 0);
+	mTitle.AppendSprite(new Text(MSGID(MSGID_DEBUGSCENE_TITLE), 12, COLOR_WHITE), 0);
 }
 
 IScene* DebugScene::Update(Input& input)

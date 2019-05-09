@@ -1,7 +1,6 @@
 #include <cstdio>
 #include <set>
 #include <switch.h>
-
 #include "Title.hpp"
 #include "Account.hpp"
 #include "Device.hpp"

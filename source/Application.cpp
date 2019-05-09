@@ -1,10 +1,9 @@
 #include <switch.h>
-
 #include "Device.hpp"
+#include "Resource.hpp"
 #include "Input.hpp"
 #include "FrameBuffer.hpp"
 #include "Scene.hpp"
-
 #include "Application.hpp"
 
 void clearScreen(FrameBuffer& frameBuffer, u32 color)
@@ -26,10 +25,12 @@ Application::Application()
 	accountInitialize();
 	plInitialize();
 	timeInitialize();
+	nsInitialize();
 }
 
 Application::~Application()
 {
+	nsExit();
 	timeExit();
 	plExit();
 	accountExit();
@@ -42,6 +43,7 @@ void Application::Run()
 {
 	Device& device = Device::Instance();
 	device.Initialize();
+	Resource::Instance().Initialize();
 
 	IScene* scene = new BootScene();
 	mFrameBuffer.Init();
