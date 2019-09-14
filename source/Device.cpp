@@ -36,7 +36,7 @@ void Device::Initialize()
 	std::map<u128, Account*> accounts;
 	for (; R_SUCCEEDED(rc) && totalCount > 0; rc = fsSaveDataIteratorRead(&iterator, &info, 1, &totalCount))
 	{
-		if (info.SaveDataType != FsSaveDataType_SaveData) continue;
+		if (info.saveDataType != FsSaveDataType_SaveData) continue;
 
 		u64 titleID = info.titleID;
 		if (titles.find(titleID) == titles.end())
