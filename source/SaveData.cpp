@@ -12,10 +12,10 @@ const std::string SAVE_DEV = "save";
 const std::string ROOT_DIR = "/Neumann/";
 const size_t BUFFER_SIZE = 0x50000;
 
-bool MountDeviceSaveData(FsFileSystem& fs, u64 titleID, u128 userID)
+bool MountDeviceSaveData(FsFileSystem& fs, u64 titleID, AccountUid userID)
 {
 	Result rc;
-	rc = fsMount_SaveData(&fs, titleID, userID);
+	rc = fsMount_SaveData(&fs, titleID, &userID);
 	if (R_FAILED(rc))
 	{
 		fsdevUnmountDevice(SAVE_DEV.c_str());
@@ -151,7 +151,7 @@ void deletePath(const std::string& srcPath, bool isWriteNAND)
 	if (isWriteNAND) fsdevCommitDevice(SAVE_DEV.c_str());
 }
 
-SaveData::SaveData(u64 titleID, u128 userID)
+SaveData::SaveData(u64 titleID, AccountUid userID)
 	: mTitleID(titleID)
 	, mUserID(userID)
 {

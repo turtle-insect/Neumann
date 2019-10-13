@@ -61,7 +61,7 @@ private:
 class ActionScene : public IScene
 {
 public:
-	ActionScene(u64 titleID, u128 userID);
+	ActionScene(u64 titleID, AccountUid userID);
 	~ActionScene();
 
 	void Entry();
@@ -72,7 +72,7 @@ private:
 	void CreateBackupList();
 
 	u64 mTitleID;
-	u128 mUserID;
+	AccountUid mUserID;
 	ItemList mBackupList;
 	Rectangle mTitleDecorate;
 	HorizontalSprites mTitle;
@@ -84,7 +84,7 @@ private:
 class ConfirmScene : public IScene
 {
 public:
-	ConfirmScene(u64 titleID, u128 userID, std::string filename);
+	ConfirmScene(u64 titleID, AccountUid userID, std::string filename);
 	~ConfirmScene();
 
 	void Entry();
@@ -93,7 +93,7 @@ public:
 
 private:
 	u64 mTitleID;
-	u128 mUserID;
+	AccountUid mUserID;
 	std::string mFileName;
 
 	Rectangle mTitleDecorate;

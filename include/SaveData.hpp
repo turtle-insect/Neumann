@@ -7,7 +7,7 @@
 class SaveData
 {
 public:
-	SaveData(u64 titleID, u128 userID);
+	SaveData(u64 titleID, AccountUid userID);
 	~SaveData();
 
 	bool Backup();
@@ -16,5 +16,5 @@ public:
 	bool Restore(std::string& filePath);
 private:
 	u64 mTitleID;
-	u128 mUserID;
+	AccountUid mUserID;
 };

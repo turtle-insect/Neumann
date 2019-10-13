@@ -1,23 +1,23 @@
 #include "Image.hpp"
 #include "Account.hpp"
 
-Account::Account(u128 userID)
+Account::Account(AccountUid userID)
 	: mUserID(userID)
 	, mProfileImage(nullptr)
 {
 	AccountProfile profile;
 	AccountUserData userData;
 	AccountProfileBase profileBase;
-	size_t profileImageSize;
+	u32 profileImageSize;
 
-	accountGetProfile(&profile, userID);
+	accountGetProfile(&profile, &userID);
 	accountProfileGet(&profile, &userData, &profileBase);
 	accountProfileGetImageSize(&profile, &profileImageSize);
 
-	mUserName = std::string(profileBase.username);
+	mUserName = std::string(profileBase.nickname);
 
 	u8* buffer = new u8[profileImageSize];
-	size_t imageSize = 0;
+	u32 imageSize = 0;
 
 	accountProfileLoadImage(&profile, buffer, profileImageSize, &imageSize);
 	mProfileImage = new Image(buffer, imageSize);
@@ -33,7 +33,7 @@ Account::~Account()
 	delete mProfileImage;
 }
 
-u128 Account::GetID()
+AccountUid Account::GetID()
 {
 	return mUserID;
 }

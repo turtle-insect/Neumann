@@ -5,6 +5,11 @@
 #include "Account.hpp"
 #include "Device.hpp"
 
+static u128 AccountUid2u128(AccountUid userID)
+{
+	return ((u128)userID.uid[0] << 64) + userID.uid[1];
+}
+
 Device::Device()
 {
 }
@@ -46,14 +51,14 @@ void Device::Initialize()
 			mTitle2Accounts.insert(std::map< u64, std::vector<Account*> >::value_type(titleID, std::vector<Account*>()));
 		}
 
-		u128 userID = info.userID;
-		std::map<u128, Account*>::iterator ite = accounts.find(userID);
+		AccountUid userID = info.userID;
+		std::map<u128, Account*>::iterator ite = accounts.find(AccountUid2u128(userID));
 		Account* account = nullptr;
 		if (ite == accounts.end())
 		{
 			account = new Account(userID);
 			mAccounts.push_back(account);
-			accounts.insert(std::map<u128, Account*>::value_type(userID, account));
+			accounts.insert(std::map<u128, Account*>::value_type(AccountUid2u128(userID), account));
 		}
 		else
 		{

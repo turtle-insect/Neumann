@@ -8,15 +8,15 @@ class Image;
 class Account
 {
 public:
-	Account(u128 userID);
+	Account(AccountUid userID);
 	~Account();
 
-	u128 GetID();
+	AccountUid GetID();
 	std::string GetName();
 	Image* GetImage() const;
 
 private:
-	u128 mUserID;
+	AccountUid mUserID;
 	std::string mUserName;
 	Image* mProfileImage;
 };

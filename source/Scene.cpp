@@ -153,7 +153,7 @@ void AccountScene::Draw(FrameBuffer& frameBuffer)
 	mAccountList.Draw(frameBuffer, 30, 584);
 }
 
-ActionScene::ActionScene(u64 titleID, u128 userID)
+ActionScene::ActionScene(u64 titleID, AccountUid userID)
 	: mTitleID(titleID)
 	, mUserID(userID)
 {
@@ -250,7 +250,7 @@ void ActionScene::CreateBackupList()
 	}
 }
 
-ConfirmScene::ConfirmScene(u64 titleID, u128 userID, std::string filename)
+ConfirmScene::ConfirmScene(u64 titleID, AccountUid userID, std::string filename)
 	: mTitleID(titleID)
 	, mUserID(userID)
 	, mFileName(filename)

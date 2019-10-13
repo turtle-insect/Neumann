@@ -16,7 +16,7 @@ Font::Font()
 	if (R_SUCCEEDED(rc)) rc = setGetSystemLanguage(&language);
 	setExit();
 
-	size_t totalCount;
+	s32 totalCount;
 	PlFontData fonts[PlSharedFontType_Total];
 	rc = plGetSharedFont(language, fonts, PlSharedFontType_Total, &totalCount);
 	if(R_FAILED(rc)) return;

@@ -8,7 +8,7 @@ Title::Title(u64 titleID)
 {
 	NsApplicationControlData data = { 0 };
 	size_t outsize = 0;
-	Result rc = nsGetApplicationControlData(1, titleID, &data, sizeof(data), &outsize);
+	Result rc = nsGetApplicationControlData(NsApplicationControlSource_Storage, titleID, &data, sizeof(data), &outsize);
 	if (R_FAILED(rc)) return;
 	if (outsize < sizeof(data.nacp)) return;
 
