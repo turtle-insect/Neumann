@@ -18,7 +18,7 @@ void FrameBuffer::Init()
 	mWindow = nwindowGetDefault();
 	nwindowSetDimensions(mWindow, mWidth, mHeight);
 	framebufferCreate(&mFrameBuffer, mWindow, mWidth, mHeight, PIXEL_FORMAT_RGBA_8888, 2);
-	 framebufferMakeLinear(&mFrameBuffer);
+	framebufferMakeLinear(&mFrameBuffer);
 }
 
 void FrameBuffer::Begin()

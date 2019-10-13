@@ -67,4 +67,6 @@ void Application::Run()
 		scene->Draw(mFrameBuffer);
 		mFrameBuffer.End();
 	}
+
+	delete scene;
 }
