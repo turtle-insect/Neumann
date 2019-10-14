@@ -1,8 +1,8 @@
 #include <switch.h>
 #include "Device.hpp"
-#include "Resource.hpp"
-#include "Input.hpp"
 #include "FrameBuffer.hpp"
+#include "Input.hpp"
+#include "Resource.hpp"
 #include "Scene.hpp"
 #include "Application.hpp"
 
@@ -26,6 +26,9 @@ Application::Application()
 	plInitialize();
 	timeInitialize();
 	nsInitialize();
+
+	Device::Instance().Initialize();
+	Resource::Instance().Initialize();
 }
 
 Application::~Application()
@@ -41,21 +44,20 @@ Application::~Application()
 
 void Application::Run()
 {
-	Device& device = Device::Instance();
-	device.Initialize();
-	Resource::Instance().Initialize();
-
 	IScene* scene = new BootScene();
-	mFrameBuffer.Init();
+
+	Input input;
+	FrameBuffer frameBuffer;
+	frameBuffer.Init();
 
 	while (appletMainLoop())
 	{
-		mInput.Update();
-		mFrameBuffer.Begin();
+		input.Update();
+		frameBuffer.Begin();
 
-		if (mInput.KeyDown(KEY_PLUS)) break;
+		if (input.KeyDown(KEY_PLUS)) break;
 
-		IScene* next = scene->Update(mInput);
+		IScene* next = scene->Update(input);
 		if (next != scene)
 		{
 			scene->Leave();
@@ -63,9 +65,9 @@ void Application::Run()
 			delete scene;
 			scene = next;
 		}
-		clearScreen(mFrameBuffer, 0xFFEAEAEA);
-		scene->Draw(mFrameBuffer);
-		mFrameBuffer.End();
+		clearScreen(frameBuffer, 0xFFEAEAEA);
+		scene->Draw(frameBuffer);
+		frameBuffer.End();
 	}
 
 	delete scene;
