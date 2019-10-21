@@ -29,17 +29,17 @@ void Device::Initialize()
 {
 	Clear();
 
-	FsSaveDataIterator iterator;
-	Result rc = fsOpenSaveDataIterator(&iterator, FsSaveDataSpaceId_NandUser);
+	FsSaveDataInfoReader iterator;
+	Result rc = fsOpenSaveDataInfoReader(&iterator, FsSaveDataSpaceId_NandUser);
 	if (R_FAILED(rc)) return;
 
 	size_t totalCount = 0;
 	FsSaveDataInfo info;
-	rc = fsSaveDataIteratorRead(&iterator, &info, 1, &totalCount);
+	rc = fsSaveDataInfoReaderRead(&iterator, &info, 1, &totalCount);
 
 	std::set<u64> titles;
 	std::map<u128, Account*> accounts;
-	for (; R_SUCCEEDED(rc) && totalCount > 0; rc = fsSaveDataIteratorRead(&iterator, &info, 1, &totalCount))
+	for (; R_SUCCEEDED(rc) && totalCount > 0; rc = fsSaveDataInfoReaderRead(&iterator, &info, 1, &totalCount))
 	{
 		if (info.saveDataType != FsSaveDataType_SaveData) continue;
 
@@ -66,7 +66,7 @@ void Device::Initialize()
 		}
 		mTitle2Accounts.find(titleID)->second.push_back(account);
 	}
-	fsSaveDataIteratorClose(&iterator);
+	fsSaveDataInfoReaderClose(&iterator);
 }
 
 std::vector<Title*>& Device::GetTitles()

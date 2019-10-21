@@ -12,18 +12,11 @@ const std::string SAVE_DEV = "save";
 const std::string ROOT_DIR = "/Neumann/";
 const size_t BUFFER_SIZE = 0x50000;
 
-bool MountDeviceSaveData(FsFileSystem& fs, u64 titleID, AccountUid userID)
+bool MountDeviceSaveData(u64 titleID, AccountUid userID)
 {
 	Result rc;
-	rc = fsMount_SaveData(&fs, titleID, &userID);
+	rc = fsdevMountSaveData(SAVE_DEV.c_str(), titleID, userID);
 	if (R_FAILED(rc))
-	{
-		fsdevUnmountDevice(SAVE_DEV.c_str());
-		return false;
-	}
-
-	int ret = fsdevMountDevice(SAVE_DEV.c_str(), fs);
-	if (ret == -1)
 	{
 		fsdevUnmountDevice(SAVE_DEV.c_str());
 		return false;
@@ -163,8 +156,7 @@ SaveData::~SaveData()
 
 bool SaveData::Backup()
 {
-	FsFileSystem fs;
-	if(!MountDeviceSaveData(fs, mTitleID, mUserID)) return false;
+	if(!MountDeviceSaveData(mTitleID, mUserID)) return false;
 	std::string dstPath = makeBackupPath(mTitleID);
 	copyPath(SAVE_DEV + ":/", dstPath, false);
 	fsdevUnmountDevice(SAVE_DEV.c_str());
@@ -173,8 +165,7 @@ bool SaveData::Backup()
 
 bool SaveData::Delete()
 {
-	FsFileSystem fs;
-	if (!MountDeviceSaveData(fs, mTitleID, mUserID)) return false;
+	if (!MountDeviceSaveData(mTitleID, mUserID)) return false;
 	deletePath(SAVE_DEV + ":/", true);
 	fsdevUnmountDevice(SAVE_DEV.c_str());
 	return true;
@@ -198,8 +189,7 @@ void SaveData::GetBackupPaths(std::vector<std::string>& paths)
 
 bool SaveData::Restore(std::string& filePath)
 {
-	FsFileSystem fs;
-	if (!MountDeviceSaveData(fs, mTitleID, mUserID)) return false;
+	if (!MountDeviceSaveData(mTitleID, mUserID)) return false;
 	deletePath(SAVE_DEV + ":/", true);
 	std::string titlePath = getBackupTitlePath(mTitleID);
 	copyPath(titlePath + "/" + filePath, SAVE_DEV + ":/", true);

@@ -10,7 +10,7 @@ Account::Account(AccountUid userID)
 	AccountProfileBase profileBase;
 	u32 profileImageSize;
 
-	accountGetProfile(&profile, &userID);
+	accountGetProfile(&profile, userID);
 	accountProfileGet(&profile, &userData, &profileBase);
 	accountProfileGetImageSize(&profile, &profileImageSize);
 
