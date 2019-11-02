@@ -43,7 +43,7 @@ void Device::Initialize()
 	{
 		if (info.saveDataType != FsSaveDataType_SaveData) continue;
 
-		u64 titleID = info.titleID;
+		u64 titleID = info.application_id;
 		if (titles.find(titleID) == titles.end())
 		{
 			titles.insert(titleID);
@@ -51,7 +51,7 @@ void Device::Initialize()
 			mTitle2Accounts.insert(std::map< u64, std::vector<Account*> >::value_type(titleID, std::vector<Account*>()));
 		}
 
-		AccountUid userID = info.userID;
+		AccountUid userID = info.uid;
 		std::map<u128, Account*>::iterator ite = accounts.find(AccountUid2u128(userID));
 		Account* account = nullptr;
 		if (ite == accounts.end())
