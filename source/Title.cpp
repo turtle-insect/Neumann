@@ -19,7 +19,7 @@ Title::Title(u64 titleID)
 
 	mTitleName = std::string(entry->name);
 	mTitleAuthor = std::string(entry->author);
-	mTitleVersion = std::string(data.nacp.version);
+	mTitleVersion = std::string(data.nacp.display_version);
 
 	mTitleIcon = new Image(data.icon, outsize - sizeof(data.nacp));
 }

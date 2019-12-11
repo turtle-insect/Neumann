@@ -30,10 +30,10 @@ void Device::Initialize()
 	Clear();
 
 	FsSaveDataInfoReader iterator;
-	Result rc = fsOpenSaveDataInfoReader(&iterator, FsSaveDataSpaceId_NandUser);
+	Result rc = fsOpenSaveDataInfoReader(&iterator, FsSaveDataSpaceId_User);
 	if (R_FAILED(rc)) return;
 
-	size_t totalCount = 0;
+	s64 totalCount = 0;
 	FsSaveDataInfo info;
 	rc = fsSaveDataInfoReaderRead(&iterator, &info, 1, &totalCount);
 
@@ -41,7 +41,7 @@ void Device::Initialize()
 	std::map<u128, Account*> accounts;
 	for (; R_SUCCEEDED(rc) && totalCount > 0; rc = fsSaveDataInfoReaderRead(&iterator, &info, 1, &totalCount))
 	{
-		if (info.saveDataType != FsSaveDataType_SaveData) continue;
+		if (info.save_data_type != FsSaveDataType_Account) continue;
 
 		u64 titleID = info.application_id;
 		if (titles.find(titleID) == titles.end())

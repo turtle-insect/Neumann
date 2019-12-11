@@ -22,7 +22,7 @@ Application::Application()
 	setsysInitialize();
 	fsInitialize();
 	nsInitialize();
-	accountInitialize();
+	accountInitialize(AccountServiceType_System);
 	plInitialize();
 	timeInitialize();
 	nsInitialize();
