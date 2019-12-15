@@ -1,7 +1,7 @@
 # Neumann
 ![Icon](https://github.com/turtle-insect/Neumann/blob/master/icon.jpg)
 
-Nintendo Switch SaveDate Backup &amp; Restore Tool
+Nintendo Switch SaveData Backup &amp; Restore Tool
 
 # Build
 * Windows10(64bit)
