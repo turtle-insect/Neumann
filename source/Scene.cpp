@@ -181,7 +181,7 @@ void ActionScene::Entry()
 	mGuide.AppendSprite(new Bin(Bin::eType::eX), 10);
 	mGuide.AppendSprite(new Text(MSGID(MSGID_BACKUP), 10, COLOR_BLACK), 20);
 	mGuide.AppendSprite(new Bin(Bin::eType::eY), 10);
-	mGuide.AppendSprite(new Text(MSGID(MSGID_RESOTRE), 10, COLOR_BLACK), 20);
+	mGuide.AppendSprite(new Text(MSGID(MSGID_RESTORE), 10, COLOR_BLACK), 20);
 	mGuide.AppendSprite(new Bin(Bin::eType::eMinus), 10);
 	mGuide.AppendSprite(new Text(MSGID(MSGID_REMOVE), 10, COLOR_RED), 20);
 	mGuide.AppendSprite(new Bin(Bin::eType::eB), 10);
@@ -194,7 +194,7 @@ IScene* ActionScene::Update(Input& input)
 	mBackupList.Update(input);
 	if (input.KeyDown(KEY_Y) && mBackupList.GetCount())
 	{
-		// Resotre
+		// Restore
 		return new ConfirmScene(mTitleID, mUserID, mTextList[mBackupList.GetCursor()]->GetText());
 	}
 	else if (input.KeyDown(KEY_X))
@@ -284,7 +284,7 @@ IScene* ConfirmScene::Update(Input& input)
 
 	if (input.KeyDown(KEY_A))
 	{
-		// Resotre
+		// Restore
 		SaveData save(mTitleID, mUserID);
 		bool result = save.Restore(mFileName);
 		mToast.Popup(result ? MSGID(MSGID_SUCCESS) : MSGID(MSGID_FAIL), result ? COLOR_BLACK : COLOR_RED);
