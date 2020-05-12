@@ -23,7 +23,7 @@ Application::Application()
 	fsInitialize();
 	nsInitialize();
 	accountInitialize(AccountServiceType_System);
-	plInitialize();
+	plInitialize(PlServiceType_User);
 	timeInitialize();
 	nsInitialize();
 
