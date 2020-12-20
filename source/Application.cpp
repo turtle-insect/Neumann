@@ -55,7 +55,7 @@ void Application::Run()
 		input.Update();
 		frameBuffer.Begin();
 
-		if (input.KeyDown(KEY_PLUS)) break;
+		if (input.KeyDown(HidNpadButton_Plus)) break;
 
 		IScene* next = scene->Update(input);
 		if (next != scene)

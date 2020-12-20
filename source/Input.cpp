@@ -2,6 +2,8 @@
 
 Input::Input()
 {
+	padConfigureInput(1, HidNpadStyleSet_NpadStandard);
+	padInitializeDefault(&mPad);
 }
 
 Input::~Input()
@@ -10,11 +12,11 @@ Input::~Input()
 
 void Input::Update()
 {
-	hidScanInput();
+	padUpdate(&mPad);
 }
 
-bool Input::KeyDown(HidControllerKeys key)
+bool Input::KeyDown(HidNpadButton key)
 {
-	u64 kDown = hidKeysDown(CONTROLLER_P1_AUTO);
+	u64 kDown = padGetButtonsDown(&mPad);
 	return (kDown & key) != 0;
 }

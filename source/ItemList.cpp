@@ -53,10 +53,10 @@ void ItemList::Update(Input& input)
 	if(mSprites.size() == 0) return;
 
 	int index = mCursor;
-	if(input.KeyDown(KEY_UP)) index -= mColumn;
-	if(input.KeyDown(KEY_DOWN)) index += mColumn;
-	if(input.KeyDown(KEY_LEFT)) index -= 1;
-	if(input.KeyDown(KEY_RIGHT)) index += 1;
+	if(input.KeyDown(HidNpadButton_Up)) index -= mColumn;
+	if(input.KeyDown(HidNpadButton_Down)) index += mColumn;
+	if(input.KeyDown(HidNpadButton_Left)) index -= 1;
+	if(input.KeyDown(HidNpadButton_Right)) index += 1;
 
 	if (index < 0) index = mSprites.size() - 1;
 	if (index >= (int)mSprites.size()) index = 0;

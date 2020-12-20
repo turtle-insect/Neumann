@@ -9,5 +9,8 @@ public:
 	~Input();
 
 	void Update();
-	bool KeyDown(HidControllerKeys key);
+	bool KeyDown(HidNpadButton key);
+
+private:
+	PadState mPad;
 };

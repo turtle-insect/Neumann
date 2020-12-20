@@ -62,13 +62,13 @@ IScene* TitleScene::Update(Input& input)
 			 + titles[mTitleList.GetCursor()]->GetName(), 12, COLOR_WHITE), 0);
 	}
 
-	if (input.KeyDown(KEY_A) && mTitleList.GetCount())
+	if (input.KeyDown(HidNpadButton_A) && mTitleList.GetCount())
 	{
 		Device& device = Device::Instance();
 		std::vector<Title*>& titles = device.GetTitles();
 		return new AccountScene(titles[mTitleList.GetCursor()]->GetID());
 	}
-	else if (input.KeyDown(KEY_X))
+	else if (input.KeyDown(HidNpadButton_X))
 	{
 		return new DebugScene();
 	}
@@ -132,13 +132,13 @@ IScene* AccountScene::Update(Input& input)
 			 + Accounts[mAccountList.GetCursor()]->GetName(), 12, COLOR_WHITE), 0);
 	}
 
-	if (input.KeyDown(KEY_A) && mAccountList.GetCount())
+	if (input.KeyDown(HidNpadButton_A) && mAccountList.GetCount())
 	{
 		Device& device = Device::Instance();
 		std::vector<Account*>& accounts = device.GetAccounts(mTitleID);
 		return new ActionScene(mTitleID, accounts[mAccountList.GetCursor()]->GetID());
 	}
-	else if (input.KeyDown(KEY_B))
+	else if (input.KeyDown(HidNpadButton_B))
 	{
 		return new TitleScene();
 	}
@@ -192,12 +192,12 @@ IScene* ActionScene::Update(Input& input)
 {
 	mToast.Update();
 	mBackupList.Update(input);
-	if (input.KeyDown(KEY_Y) && mBackupList.GetCount())
+	if (input.KeyDown(HidNpadButton_Y) && mBackupList.GetCount())
 	{
 		// Restore
 		return new ConfirmScene(mTitleID, mUserID, mTextList[mBackupList.GetCursor()]->GetText());
 	}
-	else if (input.KeyDown(KEY_X))
+	else if (input.KeyDown(HidNpadButton_X))
 	{
 		// Backup
 		SaveData save(mTitleID, mUserID);
@@ -205,7 +205,7 @@ IScene* ActionScene::Update(Input& input)
 		mToast.Popup(result ? MSGID(MSGID_SUCCESS) : MSGID(MSGID_FAIL), result ? COLOR_BLACK : COLOR_RED);
 		CreateBackupList();
 	}
-	else if (input.KeyDown(KEY_MINUS))
+	else if (input.KeyDown(HidNpadButton_Minus))
 	{
 		// Save Remove
 		SaveData save(mTitleID, mUserID);
@@ -213,7 +213,7 @@ IScene* ActionScene::Update(Input& input)
 		mToast.Popup(result ? MSGID(MSGID_SUCCESS) : MSGID(MSGID_FAIL), result ? COLOR_BLACK : COLOR_RED);
 		CreateBackupList();
 	}
-	else if (input.KeyDown(KEY_B))
+	else if (input.KeyDown(HidNpadButton_B))
 	{
 		return new AccountScene(mTitleID);
 	}
@@ -282,14 +282,14 @@ IScene* ConfirmScene::Update(Input& input)
 		return new ActionScene(mTitleID, mUserID);
 	}
 
-	if (input.KeyDown(KEY_A))
+	if (input.KeyDown(HidNpadButton_A))
 	{
 		// Restore
 		SaveData save(mTitleID, mUserID);
 		bool result = save.Restore(mFileName);
 		mToast.Popup(result ? MSGID(MSGID_SUCCESS) : MSGID(MSGID_FAIL), result ? COLOR_BLACK : COLOR_RED);
 	}
-	else if (input.KeyDown(KEY_B))
+	else if (input.KeyDown(HidNpadButton_B))
 	{
 		return new ActionScene(mTitleID, mUserID);
 	}
@@ -339,11 +339,11 @@ void DebugScene::Entry()
 IScene* DebugScene::Update(Input& input)
 {
 	mLogList.Update(input);
-	if (input.KeyDown(KEY_A))
+	if (input.KeyDown(HidNpadButton_A))
 	{
 		// Any Debug Programming.
 	}
-	else if (input.KeyDown(KEY_B))
+	else if (input.KeyDown(HidNpadButton_B))
 	{
 		return new BootScene();
 	}
