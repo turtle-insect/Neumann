@@ -1,17 +1,10 @@
 #pragma once
 
-#include <string>
-
-class Language
+enum eLanguage
 {
-public:
-	static Language& Instance();
-	void Initialize();
-	std::string& GetLanguageName();
-
-private:
-	Language();
-	~Language();
-
-	std::string mLanguageName;
+	eEnglish,
+	eJapanese,
+	eOther,
 };
+
+eLanguage getLanguage();

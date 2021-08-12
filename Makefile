@@ -32,13 +32,14 @@ include $(DEVKITPRO)/libnx/switch_rules
 #---------------------------------------------------------------------------------
 APP_TITLE	:=	Neumann
 APP_AUTHOR	:=	turtle-insect
-APP_VERSION	:=	0.0.18
+APP_VERSION	:=	0.0.19
 
 TARGET		:=	$(notdir $(CURDIR))
 OUTDIR		:=	bin
 BUILD		:=	build
 SOURCES		:=	source
 DATA		:=	data
+ROMFS		:=	romfs
 INCLUDES	:=	include
 EXEFS_SRC	:=	exefs_src
 

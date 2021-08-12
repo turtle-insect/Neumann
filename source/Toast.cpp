@@ -3,7 +3,7 @@
 #include "Rectangle.hpp"
 #include "Toast.hpp"
 
-static const uint MAX_TIMER = 300;
+static const uint MAX_TIMER = 180;
 
 Toast::Toast()
 	: mTimer(0)
@@ -20,7 +20,7 @@ Toast::~Toast()
 	delete mText;
 }
 
-void Toast::Popup(std::string message, u32 color)
+void Toast::Popup(const std::string& message, u32 color)
 {
 	mTimer = 1;
 	delete mText;

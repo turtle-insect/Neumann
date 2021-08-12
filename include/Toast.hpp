@@ -14,7 +14,7 @@ public:
 	Toast();
 	~Toast();
 
-	void Popup(std::string message, u32 color);
+	void Popup(const std::string& message, u32 color);
 	bool Update();
 	void Draw(FrameBuffer& frameBuffer, size_t left, size_t top);
 

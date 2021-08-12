@@ -84,7 +84,7 @@ private:
 class ConfirmScene : public IScene
 {
 public:
-	ConfirmScene(u64 titleID, AccountUid userID, std::string filename);
+	ConfirmScene(u64 titleID, AccountUid userID, const std::string& filename);
 	~ConfirmScene();
 
 	void Entry();

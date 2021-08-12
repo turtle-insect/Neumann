@@ -20,7 +20,9 @@ void clearScreen(FrameBuffer& frameBuffer, u32 color)
 Application::Application()
 {
 	setsysInitialize();
+	setInitialize();
 	fsInitialize();
+	romfsInit();
 	nsInitialize();
 	accountInitialize(AccountServiceType_System);
 	plInitialize(PlServiceType_User);
@@ -38,13 +40,16 @@ Application::~Application()
 	plExit();
 	accountExit();
 	nsExit();
+	romfsExit();
 	fsExit();
+	setExit();
 	setsysExit();
 }
 
 void Application::Run()
 {
 	IScene* scene = new BootScene();
+	scene->Entry();
 
 	Input input;
 	FrameBuffer frameBuffer;

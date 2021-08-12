@@ -39,6 +39,7 @@ void TitleScene::Entry()
 	{
 		Sprite* sprite = titles[i]->GetImage();
 		if (sprite == nullptr) continue;
+
 		mTitleList.AppendSprite(sprite);
 	}
 
@@ -46,7 +47,7 @@ void TitleScene::Entry()
 	mTitleDecorate.SetWidth(1280);
 	mTitleDecorate.SetHeight(64);
 
-	mGuide.AppendSprite(new Text(MSGID(MSGID_TITLESCENE_DESCRIPTION), 10, COLOR_BLACK), 0);
+	mGuide.AppendSprite(new Text(MSGID("MSGID_TITLESCENE_DESCRIPTION"), 10, COLOR_BLACK), 0);
 	mGuide.AppendSprite(new Bin(Bin::eType::eA), 0);
 }
 
@@ -58,8 +59,15 @@ IScene* TitleScene::Update(Input& input)
 		mTitle.Clear();
 		Device& device = Device::Instance();
 		std::vector<Title*>& titles = device.GetTitles();
-		mTitle.AppendSprite(new Text(MSGID(MSGID_TITLESCENE_TITLE)
-			 + titles[mTitleList.GetCursor()]->GetName(), 12, COLOR_WHITE), 0);
+		Text* txt = new Text(MSGID("MSGID_TITLESCENE_TITLE") + titles[mTitleList.GetCursor()]->GetName(), 12, COLOR_WHITE);;
+		for(size_t size = 12; size > 6; size -= 2)
+		{
+			if(txt->Width() < 1280) break;
+
+			delete txt;
+			txt = new Text(MSGID("MSGID_TITLESCENE_TITLE") + titles[mTitleList.GetCursor()]->GetName(), size, COLOR_WHITE);
+		}
+		mTitle.AppendSprite(txt, 0);
 	}
 
 	if (input.KeyDown(HidNpadButton_A) && mTitleList.GetCount())
@@ -103,6 +111,7 @@ void AccountScene::Entry()
 	{
 		Sprite* sprite = titles[i]->GetImage();
 		if (sprite == nullptr) continue;
+
 		mTitleList.AppendSprite(sprite);
 		if (mTitleID == titles[i]->GetID()) mTitleList.SetCursor(i);
 	}
@@ -112,6 +121,7 @@ void AccountScene::Entry()
 	{
 		Sprite* sprite = accounts[i]->GetImage();
 		if (sprite == nullptr) continue;
+
 		mAccountList.AppendSprite(sprite);
 	}
 
@@ -128,7 +138,7 @@ IScene* AccountScene::Update(Input& input)
 		mTitle.Clear();
 		Device& device = Device::Instance();
 		std::vector<Account*>& Accounts = device.GetAccounts(mTitleID);
-		mTitle.AppendSprite(new Text(MSGID(MSGID_ACCOUNTSCENE_TITLE)
+		mTitle.AppendSprite(new Text(MSGID("MSGID_ACCOUNTSCENE_TITLE")
 			 + Accounts[mAccountList.GetCursor()]->GetName(), 12, COLOR_WHITE), 0);
 	}
 
@@ -176,16 +186,16 @@ void ActionScene::Entry()
 	mTitleDecorate.SetWidth(1280);
 	mTitleDecorate.SetHeight(64);
 
-	mTitle.AppendSprite(new Text(MSGID(MSGID_ACTIONSCENE_TITLE), 12, COLOR_WHITE), 0);
+	mTitle.AppendSprite(new Text(MSGID("MSGID_ACTIONSCENE_TITLE"), 12, COLOR_WHITE), 0);
 
 	mGuide.AppendSprite(new Bin(Bin::eType::eX), 10);
-	mGuide.AppendSprite(new Text(MSGID(MSGID_BACKUP), 10, COLOR_BLACK), 20);
+	mGuide.AppendSprite(new Text(MSGID("MSGID_BACKUP"), 10, COLOR_BLACK), 20);
 	mGuide.AppendSprite(new Bin(Bin::eType::eY), 10);
-	mGuide.AppendSprite(new Text(MSGID(MSGID_RESTORE), 10, COLOR_BLACK), 20);
+	mGuide.AppendSprite(new Text(MSGID("MSGID_RESTORE"), 10, COLOR_BLACK), 20);
 	mGuide.AppendSprite(new Bin(Bin::eType::eMinus), 10);
-	mGuide.AppendSprite(new Text(MSGID(MSGID_REMOVE), 10, COLOR_RED), 20);
+	mGuide.AppendSprite(new Text(MSGID("MSGID_REMOVE"), 10, COLOR_RED), 20);
 	mGuide.AppendSprite(new Bin(Bin::eType::eB), 10);
-	mGuide.AppendSprite(new Text(MSGID(MSGID_BACK), 10, COLOR_BLACK), 20);
+	mGuide.AppendSprite(new Text(MSGID("MSGID_BACK"), 10, COLOR_BLACK), 20);
 }
 
 IScene* ActionScene::Update(Input& input)
@@ -202,7 +212,7 @@ IScene* ActionScene::Update(Input& input)
 		// Backup
 		SaveData save(mTitleID, mUserID);
 		bool result = save.Backup();
-		mToast.Popup(result ? MSGID(MSGID_SUCCESS) : MSGID(MSGID_FAIL), result ? COLOR_BLACK : COLOR_RED);
+		mToast.Popup(result ? MSGID("MSGID_SUCCESS") : MSGID("MSGID_FAIL"), result ? COLOR_BLACK : COLOR_RED);
 		CreateBackupList();
 	}
 	else if (input.KeyDown(HidNpadButton_Minus))
@@ -210,7 +220,7 @@ IScene* ActionScene::Update(Input& input)
 		// Save Remove
 		SaveData save(mTitleID, mUserID);
 		bool result = save.Delete();
-		mToast.Popup(result ? MSGID(MSGID_SUCCESS) : MSGID(MSGID_FAIL), result ? COLOR_BLACK : COLOR_RED);
+		mToast.Popup(result ? MSGID("MSGID_SUCCESS") : MSGID("MSGID_FAIL"), result ? COLOR_BLACK : COLOR_RED);
 		CreateBackupList();
 	}
 	else if (input.KeyDown(HidNpadButton_B))
@@ -250,7 +260,7 @@ void ActionScene::CreateBackupList()
 	}
 }
 
-ConfirmScene::ConfirmScene(u64 titleID, AccountUid userID, std::string filename)
+ConfirmScene::ConfirmScene(u64 titleID, AccountUid userID, const std::string& filename)
 	: mTitleID(titleID)
 	, mUserID(userID)
 	, mFileName(filename)
@@ -269,9 +279,9 @@ void ConfirmScene::Entry()
 	mTitleDecorate.SetWidth(1280);
 	mTitleDecorate.SetHeight(64);
 
-	mTitle.AppendSprite(new Text(MSGID(MSGID_CONFIRMSCENE_TITLE), 12, COLOR_WHITE), 0);
+	mTitle.AppendSprite(new Text(MSGID("MSGID_CONFIRMSCENE_TITLE"), 12, COLOR_WHITE), 0);
 
-	mGuide.AppendSprite(new Text(MSGID(MSGID_CONFIRMSCENE_DESCRIPTION), 10, COLOR_BLACK), 0);
+	mGuide.AppendSprite(new Text(MSGID("MSGID_CONFIRMSCENE_DESCRIPTION"), 10, COLOR_BLACK), 0);
 	mGuide.AppendSprite(new Bin(Bin::eType::eA), 0);
 }
 
@@ -287,7 +297,7 @@ IScene* ConfirmScene::Update(Input& input)
 		// Restore
 		SaveData save(mTitleID, mUserID);
 		bool result = save.Restore(mFileName);
-		mToast.Popup(result ? MSGID(MSGID_SUCCESS) : MSGID(MSGID_FAIL), result ? COLOR_BLACK : COLOR_RED);
+		mToast.Popup(result ? MSGID("MSGID_SUCCESS") : MSGID("MSGID_FAIL"), result ? COLOR_BLACK : COLOR_RED);
 	}
 	else if (input.KeyDown(HidNpadButton_B))
 	{
@@ -333,7 +343,7 @@ void DebugScene::Entry()
 	mTitleDecorate.SetWidth(1280);
 	mTitleDecorate.SetHeight(64);
 
-	mTitle.AppendSprite(new Text(MSGID(MSGID_DEBUGSCENE_TITLE), 12, COLOR_WHITE), 0);
+	mTitle.AppendSprite(new Text(MSGID("MSGID_DEBUGSCENE_TITLE"), 12, COLOR_WHITE), 0);
 }
 
 IScene* DebugScene::Update(Input& input)

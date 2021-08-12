@@ -6,6 +6,6 @@
 class Debug
 {
 public:
-	void AppendLog(std::string log);
+	void AppendLog(const std::string& log);
 	std::vector<std::string>& GetLogs();
 };

@@ -3,7 +3,7 @@
 #include "FrameBuffer.hpp"
 #include "Text.hpp"
 
-Text::Text(std::string text, size_t size, u32 color)
+Text::Text(const std::string& text, size_t size, u32 color)
 	: mColor(color)
 	, mAlpha(nullptr)
 {

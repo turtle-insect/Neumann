@@ -1,33 +1,28 @@
 #include <switch.h>
 #include "Language.hpp"
 
-Language::Language()
+eLanguage getLanguage()
 {
-	mLanguageName = "";
-}
+	SetLanguage sl;
+	u64 l;
+	setGetSystemLanguage(&l);
+	setMakeLanguage(l, &sl);
 
-Language::~Language()
-{
-}
+	eLanguage lang = eLanguage::eOther;
+	switch(sl)
+	{
+		case SetLanguage_ENGB:
+		case SetLanguage_ENUS:
+			lang = eLanguage::eEnglish;
+			break;
 
-Language& Language::Instance()
-{
-	static Language instance;
-	return instance;
-}
+		case SetLanguage_JA:
+			lang = eLanguage::eJapanese;
+			break;
 
-void Language::Initialize()
-{
-	NsApplicationControlData data = {0};
-	NacpLanguageEntry *langentry = nullptr;
+		default:
+			break;
+	}
 
-	Result rc = nacpGetLanguageEntry(&data.nacp, &langentry);
-	if (R_FAILED(rc) || langentry == nullptr) return;
-
-	mLanguageName = langentry->name;
-}
-
-std::string& Language::GetLanguageName()
-{
-	return mLanguageName;
+	return lang;
 }

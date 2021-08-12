@@ -1,11 +1,54 @@
-#include <map>
+#include <vector>
+#include <cstring>
 #include <switch.h>
 #include "Language.hpp"
 #include "MessageID.hpp"
 #include "Resource.hpp"
 
-typedef std::map<int, std::string> MessageContainer;
+struct stKeyValue
+{
+	std::string key;
+	std::string value;
+};
+
+typedef std::vector<stKeyValue*> MessageContainer;
+
 MessageContainer messageList;
+
+void appendMessage(std::string path)
+{
+	FILE* f = fopen(path.c_str(), "r");
+	if(f == nullptr) return;
+
+	char oneline[1000] = {};
+	for(; fgets(oneline, sizeof(oneline), f) != nullptr;)
+	{
+		if(oneline[0] == '#') continue;
+
+		size_t len = strlen(oneline);
+		if(len <= 2) continue;
+
+		if(oneline[len - 2] == '\r') oneline[len - 2] = 0;
+		else if(oneline[len - 1] == '\n') oneline[len - 1] = 0;
+
+		char* index = strchr(oneline, '\t');
+		if(index == nullptr) continue;
+
+		*index = 0;
+		std::string key(oneline);
+		std::string value(index + 1);
+
+		std::string msg = Resource::Instance().GetMessage(key);
+		if(msg == "")
+		{
+			stKeyValue* item = new stKeyValue;
+			item->key = key;
+			item->value = value;
+			messageList.push_back(item);
+		}
+	}
+	fclose(f);
+}
 
 Resource::Resource()
 {
@@ -13,6 +56,10 @@ Resource::Resource()
 
 Resource::~Resource()
 {
+	for(size_t i = 0; i < messageList.size(); i++)
+	{
+		delete messageList[i];
+	}
 }
 
 Resource& Resource::Instance()
@@ -23,33 +70,27 @@ Resource& Resource::Instance()
 
 void Resource::Initialize()
 {
-	Language& lang = Language::Instance();
-	lang.Initialize();
+	eLanguage lang = getLanguage();
 
-	std::string name = lang.GetLanguageName();
-
-	if(1)
+	switch(lang)
 	{
-		messageList.insert(MessageContainer::value_type(MSGID_TITLESCENE_TITLE, "Title : "));
-		messageList.insert(MessageContainer::value_type(MSGID_TITLESCENE_DESCRIPTION, "Select title and account by pressing "));
-		messageList.insert(MessageContainer::value_type(MSGID_ACCOUNTSCENE_TITLE, "Account : "));
-		messageList.insert(MessageContainer::value_type(MSGID_ACTIONSCENE_TITLE, "Action"));
-		messageList.insert(MessageContainer::value_type(MSGID_CONFIRMSCENE_TITLE, "Confirm"));
-		messageList.insert(MessageContainer::value_type(MSGID_CONFIRMSCENE_DESCRIPTION, "If you Restore pressing "));
-		messageList.insert(MessageContainer::value_type(MSGID_DEBUGSCENE_TITLE, "Debug"));
-		messageList.insert(MessageContainer::value_type(MSGID_SUCCESS, "Success"));
-		messageList.insert(MessageContainer::value_type(MSGID_FAIL, "Fail"));
-		messageList.insert(MessageContainer::value_type(MSGID_BACKUP, "Backup"));
-		messageList.insert(MessageContainer::value_type(MSGID_RESTORE, "Restore"));
-		messageList.insert(MessageContainer::value_type(MSGID_REMOVE, "Save Remove"));
-		messageList.insert(MessageContainer::value_type(MSGID_BACK, "Back"));
+		case eJapanese:
+			appendMessage("romfs:/lang/jp.txt");
+			break;
+
+		default:
+			break;
 	}
+
+	appendMessage("romfs:/lang/en.txt");
 }
 
-std::string Resource::GetMessage(int messageID)
+std::string Resource::GetMessage(const std::string& messageID)
 {
-	MessageContainer::iterator ite = messageList.find(messageID);
-	if(ite == messageList.end()) return "";
+	for(size_t i = 0; i < messageList.size(); i++)
+	{
+		if(messageID == messageList[i]->key) return messageList[i]->value;
+	}
 
-	return (*ite).second;
+	return "";
 }

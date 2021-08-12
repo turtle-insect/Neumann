@@ -7,7 +7,7 @@ class Resource
 public:
 	static Resource& Instance();
 	void Initialize();
-	std::string GetMessage(int messageID);
+	std::string GetMessage(const std::string& messageID);
 
 private:
 	Resource();
