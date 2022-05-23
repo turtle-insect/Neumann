@@ -1,3 +1,5 @@
+![DL Count](https://img.shields.io/github/downloads/turtle-insect/Neumann/total.svg)
+
 # Neumann
 ![Icon](https://github.com/turtle-insect/Neumann/blob/master/icon.jpg)
 
