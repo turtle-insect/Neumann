@@ -78,6 +78,10 @@ void Resource::Initialize()
 			appendMessage("romfs:/lang/jp.txt");
 			break;
 
+		case eKorian:
+			appendMessage("romfs:/lang/ko.txt");
+			break;
+
 		default:
 			break;
 	}

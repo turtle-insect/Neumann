@@ -20,6 +20,10 @@ eLanguage getLanguage()
 			lang = eLanguage::eJapanese;
 			break;
 
+		case SetLanguage_KO:
+			lang = eLanguage::eKorian;
+			break;
+
 		default:
 			break;
 	}
