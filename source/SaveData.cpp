@@ -14,8 +14,7 @@ const size_t BUFFER_SIZE = 0x50000;
 
 bool MountDeviceSaveData(u64 titleID, AccountUid userID)
 {
-	Result rc;
-	rc = fsdevMountSaveData(SAVE_DEV.c_str(), titleID, userID);
+	Result rc = fsdevMountSaveData(SAVE_DEV.c_str(), titleID, userID);
 	if (R_FAILED(rc))
 	{
 		fsdevUnmountDevice(SAVE_DEV.c_str());
@@ -71,7 +70,7 @@ bool copyFile(const std::string& srcFile, const std::string& dstFile)
 		return false;
 	}
 
-	char* buf = new char[BUFFER_SIZE];
+	char buf[BUFFER_SIZE] = {0};
 
 	while (!feof(src))
 	{
@@ -79,7 +78,6 @@ bool copyFile(const std::string& srcFile, const std::string& dstFile)
 		fwrite(buf, 1, size, dst);
 	}
 
-	delete [] buf;
 	fclose(dst);
 	fclose(src);
 
