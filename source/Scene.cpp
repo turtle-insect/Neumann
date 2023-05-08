@@ -19,6 +19,10 @@
 
 IScene* BootScene::Update(Input& input)
 {
+	Device& device = Device::Instance();
+	std::vector<Title*>& titles = device.GetTitles();
+	if (titles.size() == 0) return this;
+
 	return new TitleScene();
 }
 
