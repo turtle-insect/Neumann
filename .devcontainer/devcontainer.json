@@ -1,5 +1,5 @@
 {
 	"name": "devkitpro",
 	"image": "devkitpro/devkita64",
-	"postCreateCommand": "/bin/bash dkp-pacman -Syu"
+	"postCreateCommand": "/bin/bash dkp-pacman -Syyu --noconfirm"
 }
