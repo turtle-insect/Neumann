@@ -19,8 +19,6 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get -yq update
-          sudo rm /var/lib/pacman/db.lck
-          sudo dkp-pacman -Syyu --noconfirm
 
       - name: Build
         run: |
