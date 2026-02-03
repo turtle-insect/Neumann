@@ -32,7 +32,7 @@ include $(DEVKITPRO)/libnx/switch_rules
 #---------------------------------------------------------------------------------
 APP_TITLE	:=	Neumann
 APP_AUTHOR	:=	turtle-insect
-APP_VERSION	:=	0.0.30
+APP_VERSION	:=	0.0.31
 
 TARGET		:=	$(notdir $(CURDIR))
 OUTDIR		:=	bin
